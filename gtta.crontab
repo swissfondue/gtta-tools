@@ -1,7 +1,0 @@
-*/1 * * * *     cd /opt/gtta/web/protected && ./yiic automation
-*/1 * * * *     cd /opt/gtta/web/protected && ./yiic gtautomation
-*/1 * * * *     cd /opt/gtta/web/protected && ./yiic email
-*/1 * * * *     cd /opt/gtta/web/protected && ./yiic vulntracker
-10 * * * *      cd /var/backups/gtta && ./backup.sh
-*/1 * * * *     cd /opt/gtta/web/protected && ./yiic checkupdate 
-*/1 * * * *     cd /opt/gtta/web/protected && ./yiic update 
