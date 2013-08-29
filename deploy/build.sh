@@ -36,12 +36,14 @@ do
 done
 
 # encode PHP files
-ioncube $DST/web -o $DST/web-encoded --copy migrations/template.php --without-loader-check
+ioncube $DST/web -o $DST/web-encoded --copy migrations/template.php --copy config/main.example.php --copy config/console.example.php --without-loader-check
 rm -r $DST/web
 mv $DST/web-encoded $DST/web
 
 # compress
-zip -9 -r $ZIP $DST
+pushd /tmp
+zip -9 -r $ZIP gtta
+popd
 openssl dgst -sha1 -sign $KEY -out $SIG $ZIP
 
 # clean
