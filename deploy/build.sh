@@ -44,3 +44,5 @@ mv $DST/web-encoded $DST/web
 zip -9 -r $ZIP $DST
 openssl dgst -sha1 -sign $KEY -out $SIG $ZIP
 
+# clean
+rm -rf $DST
