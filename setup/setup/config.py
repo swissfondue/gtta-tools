@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 TASKS_ENABLED = (
-    #"time",
-    "ca",
     "network",
     "domain",
-    #"user",
+    "user",
+    "ca",
 )
 
 MENU_KEYS = "123456789abcdefghijklmnoprstuvwxyz"

@@ -1,9 +1,12 @@
 # coding: utf-8
 
 from ConfigParser import ConfigParser
+from psycopg2 import connect
 from setup.error import NotImplementedError
 
-CONFIG_PATH = "/opt/gtta/config/gtta.ini"
+_CONFIG_PATH = "/opt/gtta/config/gtta.ini"
+_DATABASE_NAME = "gtta"
+_DATABASE_USER = "gtta"
 
 
 class Task(object):
@@ -44,7 +47,7 @@ class Task(object):
         Read GTTA settings
         """
         config = ConfigParser()
-        config.read(CONFIG_PATH)
+        config.read(_CONFIG_PATH)
         sections = {}
 
         for section in config.sections():
@@ -68,5 +71,14 @@ class Task(object):
             for option, value in options.iteritems():
                 config.set(section, option, value)
 
-        with open(CONFIG_PATH, "wb") as config_file:
+        with open(_CONFIG_PATH, "wb") as config_file:
             config.write(config_file)
+
+    def connect_db(self):
+        """
+        Connect to db
+        """
+        settings = self.read_settings()
+        password = settings["database"]["password"]
+
+        return connect("dbname=%s user=%s password=%s" % (_DATABASE_NAME, _DATABASE_USER, password))
