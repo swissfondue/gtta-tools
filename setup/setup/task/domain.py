@@ -78,7 +78,7 @@ class Domain(Task):
                             "openssl genrsa -out %s 2048" % temp_key,
                             "openssl req -new -key %s -out %s -subj \"/C=CH/ST=Zuerich/L=Zuerich/O=Infoguard AG"
                             "/OU=Infoguard AG/CN=%s/emailAddress=info@infoguard.ch\"" % (temp_key, temp_csr, domain),
-                            "openssl x509 -req -days 365 -in %s -signkey %s -out %s" % (temp_csr, temp_key, temp_crt),
+                            "openssl x509 -req -days 3650 -in %s -signkey %s -out %s" % (temp_csr, temp_key, temp_crt),
                         )
 
                         for command in commands:

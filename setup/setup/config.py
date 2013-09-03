@@ -2,10 +2,9 @@
 
 TASKS_ENABLED = (
     #"time",
+    "ca",
     "network",
     "domain",
-    #"database" - auto,
-    #"ca" - auto,
     #"user",
 )
 

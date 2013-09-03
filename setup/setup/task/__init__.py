@@ -12,6 +12,7 @@ class Task(object):
     """
     NAME = "Base Task"
     DESCRIPTION = "Base task that does nothing."
+    FIRST_TIME_ONLY = False
 
     def __init__(self):
         """

@@ -37,18 +37,19 @@ def first_time():
     for task in TASKS_ENABLED:
         task = load_task(task)
 
-        header = '%s (step %i of %i)' % ( task.NAME, number, len(TASKS_ENABLED) )
+        header = '%s (step %i of %i)' % (task.NAME, number, len(TASKS_ENABLED))
         print header
         print '-' * len(header)
         print task.DESCRIPTION
 
         task.run(mandatory=True)
+        number += 1
 
     try:
         # save setup flag file
         open(SETUP_COMPLETED_FLAG, 'w').close()
 
-    except Exception:
+    except:
         pass
 
 def configuration():
@@ -64,8 +65,9 @@ def configuration():
     for task in TASKS_ENABLED:
         task = load_task(task)
 
-        tasks.append(task.NAME)
-        task_objects.append(task)
+        if not task.FIRST_TIME_ONLY:
+            tasks.append(task.NAME)
+            task_objects.append(task)
 
     while True:
         try:
