@@ -7,7 +7,7 @@ DST="/tmp/gtta"
 CLEANLIST=(".hg" ".hgrc" ".hgignore" ".idea" ".DS_Store" '"*.swp"' '"*~"' '"*.svn"')
 ZIP="/tmp/gtta.zip"
 SIG="/tmp/gtta.sig"
-KEY="/Users/anton/Projects/gtta/doc/security/keys/update-server.priv"
+KEY="/Users/anton/Projects/gtta/security/keys/update-server.priv"
 
 if [ -e $DST ] 
 then
