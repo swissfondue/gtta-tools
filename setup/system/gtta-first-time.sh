@@ -9,7 +9,7 @@
 # Short-Description:    First time GTTA setup.
 ### END INIT INFO
 
-SETUP_COMPLETED_FLAG="/opt/gtta/.setup-completed"
+SETUP_COMPLETED_FLAG="/opt/gtta/tools/setup/.setup-completed"
 
 case "$1" in
     start)

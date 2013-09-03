@@ -15,18 +15,18 @@ _NETWORK_CONFIG_PATH = '/etc/network/interfaces'
 _DNS_CONFIG_PATH = '/etc/resolv.conf'
 _BACKUP_EXTENSION = 'bak'
 
-_STATIC_CONFIG_TEMPLATE = '''# loopback
+_STATIC_CONFIG_TEMPLATE = """# loopback
 auto lo
 iface lo inet loopback
 
 # the primary network interface
 allow-hotplug eth0
 iface eth0 inet static
-	address %(address)s
-	netmask %(netmask)s
-	gateway %(gateway)s
-	dns-nameservers %(nameserver)s
-	dns-search local\n'''
+\taddress %(address)s
+\tnetmask %(netmask)s
+\tgateway %(gateway)s
+\tdns-nameservers %(nameserver)s
+\tdns-search local\n"""
 
 _DHCP_CONFIG_TEMPLATE = '''
 # loopback
