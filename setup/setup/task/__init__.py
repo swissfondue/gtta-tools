@@ -23,6 +23,7 @@ class Task(object):
         """
         self.changed = False
         self.mandatory = False
+        self.is_startup = False
 
     def run(self, mandatory=False):
         """

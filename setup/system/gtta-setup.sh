@@ -5,7 +5,7 @@ SETUP_DIR="/opt/gtta/tools/setup"
 CWD=$(pwd)
 
 cd $SETUP_DIR
-python setup.py
+python setup.py $1
 cd $CWD
 
 # unset variables

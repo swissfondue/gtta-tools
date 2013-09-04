@@ -11,6 +11,7 @@ from setup import get_input, error
 _DOMAIN_REGEXP = r"^([a-z\d]+)(\-[a-z\d]+)?(\.[a-z\d]+(\-[a-z\d]+)?){0,}$"
 _KEY_FILE = "/opt/gtta/security/ssl/gtta.key"
 _CERT_FILE = "/opt/gtta/security/ssl/gtta.crt"
+_GENERATE_CONFIG = "python /opt/gtta/tools/deploy/make_config.py /opt/gtta/config/gtta.ini /opt/gtta/current/web/protected/config"
 
 
 class Domain(Task):
@@ -29,7 +30,10 @@ class Domain(Task):
         try:
             self._save_domain(domain)
             self._generate_cert(domain)
-            self._restart_apache()
+            self._generate_config()
+
+            if not self.is_startup:
+                self._restart_apache()
 
             self.changed = True
             print "Done\n"
@@ -98,6 +102,22 @@ class Domain(Task):
 
             finally:
                 unlink(temp_key)
+
+        except Exception as e:
+            print "FAILED (%s)\x07" % str(e)
+            raise
+
+    def _generate_config(self):
+        """
+        Generate software config
+        """
+        print "Generating Software Configuration..."
+
+        try:
+            ret_code = call([_GENERATE_CONFIG], shell=True, stdout=PIPE, stderr=PIPE)
+
+            if ret_code != 0:
+                raise error.SystemCommandError()
 
         except Exception as e:
             print "FAILED (%s)\x07" % str(e)

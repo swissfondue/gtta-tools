@@ -1,13 +1,16 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 from os import path, geteuid
-from sys import exit
+from sys import exit, argv
 from setup.config import SETUP_COMPLETED_FLAG, TASKS_ENABLED, FIRST_TIME_GREETING_TEXT, GREETING_TEXT
 from setup.task import Task
 from setup.error import SetupError, InvalidTaskError, QuitMenu
 from setup import show_menu
 
-def load_task(task):
+_STARTUP_FLAG = "start"
+
+
+def load_task(task, is_startup=False):
     """
     Load task
     """
@@ -20,12 +23,14 @@ def load_task(task):
         if not isinstance(task, Task):
             raise InvalidTaskError
 
+        task.is_startup = is_startup
+
     except ( ImportError, AttributeError ):
         raise InvalidTaskError
 
     return task
 
-def first_time():
+def first_time(is_startup=False):
     """
     First time setup
     """
@@ -35,7 +40,7 @@ def first_time():
     number = 1
 
     for task in TASKS_ENABLED:
-        task = load_task(task)
+        task = load_task(task, is_startup)
 
         header = '%s (step %i of %i)' % (task.NAME, number, len(TASKS_ENABLED))
         print header
@@ -52,7 +57,7 @@ def first_time():
     except:
         pass
 
-def configuration():
+def configuration(startup=False):
     """
     Regular configuration process
     """
@@ -63,7 +68,7 @@ def configuration():
     task_objects = []
 
     for task in TASKS_ENABLED:
-        task = load_task(task)
+        task = load_task(task, startup)
 
         if not task.FIRST_TIME_ONLY:
             tasks.append(task.NAME)
@@ -95,11 +100,16 @@ def main():
     if geteuid() != 0:
         exit('Please run this script as root user.')
 
+    is_startup = False
+
+    if len(argv) > 1 and argv[1] == _STARTUP_FLAG:
+        is_startup = True
+
     try:
         if not path.exists(SETUP_COMPLETED_FLAG):
-            first_time()
+            first_time(is_startup)
         else:
-            configuration()
+            configuration(is_startup)
 
     except SetupError as e:
         print str(e)
