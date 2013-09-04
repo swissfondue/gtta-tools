@@ -137,7 +137,7 @@ class Domain(Task):
             pass
 
         if not domain:
-            domain = "gtta.box"
+            domain = "gtta"
 
         return domain
 
