@@ -4,7 +4,7 @@ set -e
 
 SRC="/Users/anton/Projects/gtta/src"
 DST="/tmp/gtta"
-CLEANLIST=(".hg" ".hgrc" ".hgignore" ".idea" ".DS_Store" '"*.swp"' '"*~"' '"*.svn"')
+CLEANLIST=(".hg" ".hgtags" ".hgrc" ".hgignore" ".idea" ".DS_Store" '"*.swp"' '"*~"' '"*.svn"')
 ZIP="/tmp/gtta.zip"
 SIG="/tmp/gtta.sig"
 KEY="/Users/anton/Projects/gtta/security/keys/update-server.priv"
