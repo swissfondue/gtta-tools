@@ -64,9 +64,9 @@ def show_menu(options, allow_quit=True, timeout=None):
             break
 
         if not choice:
-            print 'Unknown option'
+            print '\nUnknown option'
         else:
-            print 'Unknown option - %s' % choice
+            print '\nUnknown option - %s' % choice
 
     if choice[0] == MENU_QUIT_KEY:
         raise QuitMenu()
