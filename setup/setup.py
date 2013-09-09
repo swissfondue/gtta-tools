@@ -8,6 +8,7 @@ from setup.error import SetupError, InvalidTaskError, QuitMenu
 from setup import show_menu
 
 _STARTUP_FLAG = "start"
+_CONFIGURATION_TIMEOUT = 10
 
 
 def load_task(task, is_startup=False):
@@ -75,8 +76,13 @@ def configuration(startup=False):
             task_objects.append(task)
 
     while True:
+        timeout = None
+
+        if startup:
+            timeout = _CONFIGURATION_TIMEOUT
+
         try:
-            choice = show_menu(tasks, allow_quit=True)
+            choice = show_menu(tasks, allow_quit=True, timeout=timeout)
         except QuitMenu:
             break
 

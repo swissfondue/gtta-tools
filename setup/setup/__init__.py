@@ -1,9 +1,12 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
+from select import select
+from sys import stdin, stdout
 from setup.config import MENU_KEYS, MENU_QUIT_KEY
 from setup.error import EmptyMenuError, QuitMenu
 
-def show_menu(options, allow_quit=True):
+
+def show_menu(options, allow_quit=True, timeout=None):
     """
     Show a menu
     """
@@ -37,7 +40,17 @@ def show_menu(options, allow_quit=True):
 
     while True:
         try:
-            choice = raw_input('\nYour choice (%s): ' % choice_options)
+            print "\nYour choice (%s): " % choice_options,
+            stdout.flush()
+
+            rlist, _, _ = select([stdin], [], [], timeout)
+
+            if rlist:
+                choice = stdin.readline()
+                choice = choice.strip("\r\n")
+            else:
+                print "\nTimed out"
+                choice = MENU_QUIT_KEY
 
         except KeyboardInterrupt:
             if allow_quit:
