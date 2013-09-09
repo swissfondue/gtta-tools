@@ -57,9 +57,6 @@ class Network(Task):
         else:
             self._dhcp()
 
-        if ip is not None:
-            pass
-
         print 'Done\n'
 
     def _validate_ip(self, ip):
