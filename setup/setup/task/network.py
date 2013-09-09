@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from os import path
-from re import match, findall
+from re import match, findall, DOTALL
 from shutil import copy2
-from subprocess import call
+from subprocess import call, Popen, PIPE
 from time import sleep
 from setup.task import Task
 from setup.error import SystemCommandError
@@ -50,12 +50,15 @@ class Network(Task):
         """
         Main task function
         """
-        choice = show_menu(( 'Manual Configuration', 'DHCP' ), allow_quit=not self.mandatory)
+        choice = show_menu(('Manual Configuration', 'DHCP'), allow_quit=not self.mandatory)
 
         if choice == 0:
             self._manual()
         else:
             self._dhcp()
+
+        if ip is not None:
+            pass
 
         print 'Done\n'
 
@@ -179,19 +182,24 @@ class Network(Task):
 
         print '\nDHCP Network Configuration'
         print 'Getting IP address...'
+        ip = None
 
         try:
-            commands = (
-                'dhclient eth0',
-            )
+            ret_code = call(["dhclient eth0"], shell=True)
 
-            for command in commands:
-                ret_code = call([ command ], shell=True)
+            if ret_code != 0:
+                raise SystemCommandError()
 
-                if ret_code != 0:
-                    raise SystemCommandError()
+            sleep(2)
 
-                sleep(2)
+            ip_data = Popen(["ifconfig eth0"], shell=True, stdout=PIPE, stderr=PIPE).communicate()[0]
+            ip = match(r".*inet addr:(\d+\.\d+\.\d+\.\d+).*", ip_data, DOTALL)
+
+            if not ip:
+                raise SystemCommandError()
+
+            ip = ip.group(1)
+            print "Assigned IP: %s" % ip
 
         except Exception as e:
             print 'FAILED (%s)\x07' % str(e)
