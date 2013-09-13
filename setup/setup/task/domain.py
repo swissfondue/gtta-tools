@@ -11,7 +11,7 @@ from setup import get_input, error
 _DOMAIN_REGEXP = r"^([a-z\d]+)(\-[a-z\d]+)?(\.[a-z\d]+(\-[a-z\d]+)?){0,}$"
 _KEY_FILE = "/opt/gtta/security/ssl/gtta.key"
 _CERT_FILE = "/opt/gtta/security/ssl/gtta.crt"
-_GENERATE_CONFIG = "python /opt/gtta/tools/deploy/make_config.py /opt/gtta/config/gtta.ini /opt/gtta/current/web/protected/config"
+_GENERATE_CONFIG = "python /opt/gtta/current/tools/make_config.py /opt/gtta/config/gtta.ini /opt/gtta/current/web/protected/config"
 
 
 class Domain(Task):

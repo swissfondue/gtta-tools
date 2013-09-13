@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # set up directory paths
-SETUP_DIR="/opt/gtta/tools/setup"
+SETUP_DIR="/opt/gtta/current/tools/setup"
 CWD=$(pwd)
 
 cd $SETUP_DIR

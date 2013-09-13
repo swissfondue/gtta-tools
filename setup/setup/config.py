@@ -10,7 +10,7 @@ TASKS_ENABLED = (
 MENU_KEYS = "123456789abcdefghijklmnoprstuvwxyz"
 MENU_QUIT_KEY = "q"
 
-SETUP_COMPLETED_FLAG = "/opt/gtta/tools/setup/.setup-completed"
+SETUP_COMPLETED_FLAG = "/opt/gtta/.setup-completed"
 
 FIRST_TIME_GREETING_TEXT = """
 GTTA - First Time Configuration
