@@ -1,2 +1,2 @@
-Cmnd_Alias GTTA = /opt/gtta/tools/setup/system/gtta-setup.sh
+Cmnd_Alias GTTA = /opt/gtta/current/tools/setup/system/gtta-setup.sh
 gtta    ALL=GTTA, NOPASSWD:GTTA
