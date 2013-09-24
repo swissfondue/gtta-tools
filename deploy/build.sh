@@ -32,7 +32,8 @@ cp $SRC/tools/crontab.txt $DST/
 # tools
 mkdir $DST/tools
 cp $SRC/tools/backup/backup.sh $DST/tools/
-cp $SRC/tools/deploy/make_config.py $DST/tools/
+mkdir $DST/install/
+cp $SRC/tools/deploy/make_config.py $DST/install/
 cp -r $SRC/tools/setup $DST/tools/
 
 # install scripts
@@ -40,7 +41,6 @@ if [ ! -z $1 ]
 then
     if [ -e "$SRC/tools/deploy/scripts/$1" ]
     then
-        mkdir $DST/install/
         cp $SRC/tools/deploy/scripts/$1/* $DST/install/
     fi
 fi
