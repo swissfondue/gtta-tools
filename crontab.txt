@@ -2,6 +2,6 @@
 */1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic gtautomation
 */1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic email
 */1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic vulntracker
-10 * * * *      root    cd /opt/gtta/current/tools && ./backup.sh
 */1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic checkupdate
 */1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic update
+#10 * * * *      root    cd /opt/gtta/current/tools && ./backup.sh
