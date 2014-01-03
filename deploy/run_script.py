@@ -87,7 +87,11 @@ def sigterm_handler(signum, frame):
 
     print "Killed :("
     stdout.flush()
-    unlink(path.join(PIDS_PATH, _external_pid))
+
+    try:
+        unlink(path.join(PIDS_PATH, _external_pid))
+    except Exception as e:
+        pass
 
     sleep(5)
 
@@ -153,7 +157,10 @@ def main():
         print line,
         stdout.flush()
 
-    unlink(path.join(PIDS_PATH, _external_pid))
+    try:
+        unlink(path.join(PIDS_PATH, _external_pid))
+    except Exception as e:
+        pass
 
     if process.poll() != 0:
         exit(process.returncode)
