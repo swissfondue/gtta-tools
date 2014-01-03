@@ -34,6 +34,7 @@ mkdir $DST/tools
 cp $SRC/tools/backup/backup.sh $DST/tools/
 mkdir $DST/install/
 cp $SRC/tools/deploy/make_config.py $DST/install/
+cp $SRC/tools/deploy/run_script.py $DST/install/
 cp -r $SRC/tools/setup $DST/tools/
 
 # install scripts
