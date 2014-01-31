@@ -8,6 +8,7 @@ CLEANLIST=(".hg" ".hgtags" ".hgrc" ".hgignore" ".idea" ".DS_Store" '"*.swp"' '"*
 ZIP="/tmp/gtta.zip"
 SIG="/tmp/gtta.sig"
 KEY="/Users/anton/Projects/gtta/security/keys/update-server.priv"
+BUILDS="/Users/anton/Projects/gtta/builds"
 
 if [ -e $DST ] 
 then
@@ -34,7 +35,7 @@ mkdir $DST/tools
 cp $SRC/tools/backup/backup.sh $DST/tools/
 mkdir $DST/install/
 cp $SRC/tools/deploy/make_config.py $DST/install/
-cp $SRC/tools/deploy/run_script.py $DST/install/
+cp $SRC/tools/deploy/run_script.py $DST/tools/
 cp -r $SRC/tools/setup $DST/tools/
 
 # install scripts
@@ -65,3 +66,11 @@ openssl dgst -sha1 -sign $KEY -out $SIG $ZIP
 
 # clean
 rm -rf $DST
+
+# move to builds directory
+if [ ! -z $1 ]
+then
+    mkdir "$BUILDS/$1"
+    mv /tmp/gtta.zip "$BUILDS/$1"
+    mv /tmp/gtta.sig "$BUILDS/$1"
+fi
