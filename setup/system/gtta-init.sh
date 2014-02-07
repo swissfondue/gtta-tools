@@ -13,7 +13,7 @@
 
 case "$1" in
     start)
-        /opt/gtta/curent/tools/setup/system/gtta-setup.sh start
+        /opt/gtta/current/tools/setup/system/gtta-setup.sh start
         ;;
     stop)
         ;;
