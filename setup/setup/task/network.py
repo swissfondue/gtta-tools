@@ -45,19 +45,22 @@ class Network(Task):
     """
     NAME = 'Network Configuration'
     DESCRIPTION = 'System network configuration: IP address, network mask and gateway.'
+    FORBIDDEN_TOOL_PARAMS = ("&&", "<", ">", "|", "*", "`")
 
     def main(self):
         """
         Main task function
         """
-        choice = show_menu(('Manual Configuration', 'DHCP'), allow_quit=not self.mandatory)
+        handlers = {
+            0: self._manual,
+            1: self._dhcp,
+            2: self._network_tools
+        }
 
-        if choice == 0:
-            self._manual()
-        else:
-            self._dhcp()
+        choice = show_menu(("Manual Configuration", "DHCP", "Network Tools"), allow_quit=not self.mandatory)
+        handlers[choice]()
 
-        print 'Done\n'
+        print "Done\n"
 
     def _validate_ip(self, ip):
         """
@@ -68,6 +71,19 @@ class Network(Task):
 
         if not match('^' + _IP_REGEXP + '$', ip):
             return False
+
+        return True
+
+    def _validate_tool_params(self, params):
+        """
+        Tool parameters validator
+        """
+        if not params:
+            return True
+
+        for param in self.FORBIDDEN_TOOL_PARAMS:
+            if params.find(param) != -1:
+                return False
 
         return True
 
@@ -89,10 +105,10 @@ class Network(Task):
         try:
             cfg = open(_NETWORK_CONFIG_PATH, 'r').read()
 
-            ip = ( findall('address ([\d\.]+)', cfg) + [ None ] )[0]
-            netmask = ( findall('netmask ([\d\.]+)', cfg) + [ None ] )[0]
-            gateway = ( findall('gateway ([\d\.]+)', cfg) + [ None ] )[0]
-            nameserver = ( findall('dns-nameservers ([\d\.]+)', cfg) + [ None ] )[0]
+            ip = (findall('address ([\d\.]+)', cfg) + [ None ])[0]
+            netmask = (findall('netmask ([\d\.]+)', cfg) + [ None ])[0]
+            gateway = (findall('gateway ([\d\.]+)', cfg) + [ None ])[0]
+            nameserver = (findall('dns-nameservers ([\d\.]+)', cfg) + [ None ])[0]
 
         except Exception:
             pass
@@ -158,7 +174,7 @@ class Network(Task):
             )
 
             for command in commands:
-                ret_code = call([ command ], shell=True)
+                ret_code = call([command], shell=True)
 
                 if ret_code != 0:
                     raise SystemCommandError()
@@ -218,3 +234,101 @@ class Network(Task):
             return
 
         self.changed = True
+
+    def _network_tools(self):
+        """
+        Network tools
+        """
+        tools = {
+            0: self._ifconfig,
+            1: self._route,
+            2: self._ip,
+            3: self._iptables,
+            4: self._ping,
+            5: self._traceroute
+        }
+
+        while True:
+            print "\n[Network Tools]"
+
+            choice = show_menu(("ifconfig", "route", "ip", "iptables", "ping", "traceroute"))
+            print
+            tools[choice]()
+
+    def _run_tool(self, tool, params):
+        """
+        Run tool
+        """
+        if params and len(params) > 100:
+            print "Too long line"
+            return
+
+        if params:
+            for sanitizer in self.FORBIDDEN_TOOL_PARAMS:
+                params = params.replace(sanitizer, "")
+
+            params = params.split(" ")
+
+        else:
+            params = []
+
+        print
+        print "[%s]" % tool[tool.rfind("/") + 1:]
+
+        try:
+            process = Popen([tool] + params, stdout=PIPE, stderr=PIPE)
+            data = process.communicate()
+
+            print data[0] or data[1]
+        except:
+            print "Tool running error"
+
+    def _ifconfig(self):
+        """
+        Ifconfig command
+        """
+        params = get_input("Parameters for \"ifconfig\"", self._validate_tool_params, True)
+        self._run_tool("/sbin/ifconfig", params)
+
+    def _route(self):
+        """
+        Route command
+        """
+        params = get_input("Parameters for \"route\"", self._validate_tool_params, True)
+        self._run_tool("/sbin/route", params)
+
+    def _ip(self):
+        """
+        IP command
+        """
+        params = get_input("Parameters for \"ip\"", self._validate_tool_params, True)
+
+        if params:
+            self._run_tool("/sbin/ip", params)
+
+    def _iptables(self):
+        """
+        IP tables command
+        """
+        params = get_input("Parameters for \"iptables\"", self._validate_tool_params, True)
+
+        if params:
+            self._run_tool("/sbin/iptables", params)
+
+    def _ping(self):
+        """
+        Ping command
+        """
+        params = get_input("Parameters for \"ping\"", self._validate_tool_params, True)
+
+        if params:
+            self._run_tool("/bin/ping", "-c3 %s" % params)
+
+    def _traceroute(self):
+        """
+        Traceroute command
+        """
+        params = get_input("Parameters for \"traceroute\"", self._validate_tool_params, True)
+
+        if params:
+            self._run_tool("/usr/sbin/traceroute", params)
