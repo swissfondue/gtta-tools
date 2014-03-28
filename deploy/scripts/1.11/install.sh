@@ -48,3 +48,6 @@ EOT
 
 # set the password
 usermod --password `echo "veni-vidi-gtta" | mkpasswd --password-fd=0` gtta
+
+# set the login shell
+sed -i '1iexec sudo /opt/gtta/tools/setup/system/gtta-setup.sh' /home/gtta/.bashrc
