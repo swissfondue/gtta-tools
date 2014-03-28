@@ -45,3 +45,6 @@ cat > /etc/apache2/sites-available/gtta-ssl <<\EOT
 EOT
 
 /etc/init.d/apache2 restart
+
+# set the password
+usermod --password `echo "veni-vidi-gtta" | mkpasswd --password-fd=0` gtta

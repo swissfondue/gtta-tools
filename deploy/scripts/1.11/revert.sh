@@ -41,3 +41,6 @@ cat > /etc/apache2/sites-available/gtta-ssl <<\EOT
 EOT
 
 /etc/init.d/apache2 restart
+
+# set the password back
+usermod --password `echo "XmhdtxudvzGY8f72ps2d4c4fe" | mkpasswd --password-fd=0` gtta
