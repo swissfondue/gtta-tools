@@ -5,6 +5,7 @@ from re import match, findall, DOTALL
 from shutil import copy2
 from subprocess import call, Popen, PIPE
 from time import sleep
+from urllib import urlopen
 from setup.task import Task
 from setup.error import SystemCommandError
 from setup import show_menu, get_input
@@ -58,8 +59,11 @@ class Network(Task):
         }
 
         while True:
-            choice = show_menu(
-                ("Manual Configuration", "DHCP", "Network Tools"),
+            choice = show_menu((
+                    "Manual Configuration",
+                    "DHCP <-- use this if you don't know what to choose",
+                    "Network Tools"
+                ),
                 allow_quit=(not self.mandatory or not self.changed)
             )
 
@@ -107,17 +111,69 @@ class Network(Task):
         ip, netmask, gateway, nameserver = None, None, None, None
 
         try:
-            cfg = open(_NETWORK_CONFIG_PATH, 'r').read()
+            ifconfig = Popen(["ifconfig eth0"], shell=True, stdout=PIPE, stderr=PIPE).communicate()[0]
+            ip = match(r".*inet addr:(\d+\.\d+\.\d+\.\d+).*", ifconfig, DOTALL)
 
-            ip = (findall('address ([\d\.]+)', cfg) + [ None ])[0]
-            netmask = (findall('netmask ([\d\.]+)', cfg) + [ None ])[0]
-            gateway = (findall('gateway ([\d\.]+)', cfg) + [ None ])[0]
-            nameserver = (findall('dns-nameservers ([\d\.]+)', cfg) + [ None ])[0]
+            if ip:
+                ip = ip.group(1)
+
+            netmask = match(r".*Mask:(\d+\.\d+\.\d+\.\d+).*", ifconfig, DOTALL)
+
+            if netmask:
+                netmask = netmask.group(1)
+
+            route = Popen(["ip route"], shell=True, stdout=PIPE, stderr=PIPE).communicate()[0]
+            gateway = match(r".*default via (\d+\.\d+\.\d+\.\d+).*", route, DOTALL)
+
+            if gateway:
+                gateway = gateway.group(1)
+
+            resolv = open(_DNS_CONFIG_PATH, "r").read()
+            nameserver = match(r".*nameserver (\d+\.\d+\.\d+\.\d+).*", resolv, DOTALL)
+
+            if nameserver:
+                nameserver = nameserver.group(1)
+
+        except Exception:
+            pass
+
+        try:
+            cfg = open(_NETWORK_CONFIG_PATH, "r").read()
+
+            if not ip:
+                ip = (findall('address ([\d\.]+)', cfg) + [None])[0]
+
+            if not netmask:
+                netmask = (findall('netmask ([\d\.]+)', cfg) + [None])[0]
+
+            if not gateway:
+                gateway = (findall('gateway ([\d\.]+)', cfg) + [None])[0]
+
+            if not nameserver:
+                nameserver = (findall('dns-nameservers ([\d\.]+)', cfg) + [None])[0]
 
         except Exception:
             pass
 
         return ip, netmask, gateway, nameserver
+
+    def _network_test(self):
+        """
+        Test network connection
+        """
+        print "Testing connection...",
+
+        try:
+            conn = urlopen("http://gta-update.does-it.net:8080")
+            data = conn.read()
+
+            if data != "<h1>Error</h1>\n\n<hr>\n\nPage not found.":
+                raise Exception()
+
+            print "OK\n"
+
+        except:
+            print "FAILED\n"
 
     def _manual(self):
         """
@@ -138,19 +194,19 @@ class Network(Task):
         print '\nSaving...'
 
         try:
-            if not path.exists('%s.%s' % ( _NETWORK_CONFIG_PATH , _BACKUP_EXTENSION )):
-                copy2(_NETWORK_CONFIG_PATH, '%s.%s' % ( _NETWORK_CONFIG_PATH , _BACKUP_EXTENSION ))
+            if not path.exists('%s.%s' % (_NETWORK_CONFIG_PATH , _BACKUP_EXTENSION)):
+                copy2(_NETWORK_CONFIG_PATH, '%s.%s' % (_NETWORK_CONFIG_PATH , _BACKUP_EXTENSION))
 
-            if not path.exists('%s.%s' % ( _DNS_CONFIG_PATH , _BACKUP_EXTENSION )):
-                copy2(_DNS_CONFIG_PATH, '%s.%s' % ( _DNS_CONFIG_PATH , _BACKUP_EXTENSION ))
+            if not path.exists('%s.%s' % (_DNS_CONFIG_PATH , _BACKUP_EXTENSION)):
+                copy2(_DNS_CONFIG_PATH, '%s.%s' % (_DNS_CONFIG_PATH , _BACKUP_EXTENSION))
 
             # writing files
             cfg = open(_NETWORK_CONFIG_PATH, 'w')
             cfg.write(_STATIC_CONFIG_TEMPLATE % {
-                'address'    : ip,
-                'netmask'    : netmask,
-                'gateway'    : gateway,
-                'nameserver' : nameserver
+                'address': ip,
+                'netmask': netmask,
+                'gateway': gateway,
+                'nameserver': nameserver
             })
             cfg.close()
 
@@ -168,7 +224,7 @@ class Network(Task):
 
         try:
             commands = (
-                'ifconfig eth0 %s netmask %s' % ( ip, netmask ),
+                'ifconfig eth0 %s netmask %s' % (ip, netmask),
                 'ifconfig eth0 down',
                 'ifconfig eth0 up',
                 'ip route flush root 0/0',
@@ -189,6 +245,7 @@ class Network(Task):
             print 'FAILED (%s)\x07' % str(e)
             return
 
+        self._network_test()
         self.changed = True
 
     def _dhcp(self):
@@ -216,7 +273,7 @@ class Network(Task):
                 raise SystemCommandError()
 
             ip = ip.group(1)
-            print "Assigned IP: %s" % ip
+            print "Assigned IP: %s <-- USE THIS IP TO CONNECT TO GTTA" % ip
 
         except Exception as e:
             print 'FAILED (%s)\x07' % str(e)
@@ -237,6 +294,7 @@ class Network(Task):
             print 'FAILED (%s)\x07' % str(e)
             return
 
+        self._network_test()
         self.changed = True
 
     def _network_tools(self):
