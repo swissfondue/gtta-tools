@@ -57,10 +57,14 @@ class Network(Task):
             2: self._network_tools
         }
 
-        choice = show_menu(("Manual Configuration", "DHCP", "Network Tools"), allow_quit=not self.mandatory)
-        handlers[choice]()
+        while True:
+            choice = show_menu(
+                ("Manual Configuration", "DHCP", "Network Tools"),
+                allow_quit=(not self.mandatory or not self.changed)
+            )
 
-        print "Done\n"
+            print
+            handlers[choice]()
 
     def _validate_ip(self, ip):
         """
@@ -76,7 +80,7 @@ class Network(Task):
 
     def _validate_tool_params(self, params):
         """
-        Tool parameters validator
+        Tool Arguments validator
         """
         if not params:
             return True
@@ -119,7 +123,7 @@ class Network(Task):
         """
         Manual network configuration
         """
-        print '\nManual Network Configuration'
+        print '[Manual Network Configuration]'
 
         ip, netmask, gateway, nameserver = self._read_defaults()
 
@@ -193,7 +197,7 @@ class Network(Task):
         """
         self.changed = False
 
-        print '\nDHCP Network Configuration'
+        print '[DHCP Network Configuration]'
         print 'Getting IP address...'
         ip = None
 
@@ -249,34 +253,34 @@ class Network(Task):
         }
 
         while True:
-            print "\n[Network Tools]"
+            print "[Network Tools]"
 
             choice = show_menu(("ifconfig", "route", "ip", "iptables", "ping", "traceroute"))
             print
             tools[choice]()
 
-    def _run_tool(self, tool, params):
+    def _run_tool(self, tool, args):
         """
         Run tool
         """
-        if params and len(params) > 100:
+        if args and len(args) > 100:
             print "Too long line"
             return
 
-        if params:
+        if args:
             for sanitizer in self.FORBIDDEN_TOOL_PARAMS:
-                params = params.replace(sanitizer, "")
+                args = args.replace(sanitizer, "")
 
-            params = params.split(" ")
+            args = args.split(" ")
 
         else:
-            params = []
+            args = []
 
         print
         print "[%s]" % tool[tool.rfind("/") + 1:]
 
         try:
-            process = Popen([tool] + params, stdout=PIPE, stderr=PIPE)
+            process = Popen([tool] + args, stdout=PIPE, stderr=PIPE)
             data = process.communicate()
 
             print data[0] or data[1]
@@ -287,48 +291,48 @@ class Network(Task):
         """
         Ifconfig command
         """
-        params = get_input("Parameters for \"ifconfig\"", self._validate_tool_params, True)
-        self._run_tool("/sbin/ifconfig", params)
+        args = get_input("Arguments for \"ifconfig\"", self._validate_tool_params, True)
+        self._run_tool("/sbin/ifconfig", args)
 
     def _route(self):
         """
         Route command
         """
-        params = get_input("Parameters for \"route\"", self._validate_tool_params, True)
-        self._run_tool("/sbin/route", params)
+        args = get_input("Arguments for \"route\"", self._validate_tool_params, True)
+        self._run_tool("/sbin/route", args)
 
     def _ip(self):
         """
         IP command
         """
-        params = get_input("Parameters for \"ip\"", self._validate_tool_params, True)
+        args = get_input("Arguments for \"ip\"", self._validate_tool_params, True)
 
-        if params:
-            self._run_tool("/sbin/ip", params)
+        if args:
+            self._run_tool("/sbin/ip", args)
 
     def _iptables(self):
         """
         IP tables command
         """
-        params = get_input("Parameters for \"iptables\"", self._validate_tool_params, True)
+        args = get_input("Arguments for \"iptables\"", self._validate_tool_params, True)
 
-        if params:
-            self._run_tool("/sbin/iptables", params)
+        if args:
+            self._run_tool("/sbin/iptables", args)
 
     def _ping(self):
         """
         Ping command
         """
-        params = get_input("Parameters for \"ping\"", self._validate_tool_params, True)
+        args = get_input("Arguments for \"ping\"", self._validate_tool_params, True)
 
-        if params:
-            self._run_tool("/bin/ping", "-c3 %s" % params)
+        if args:
+            self._run_tool("/bin/ping", "-c3 %s" % args)
 
     def _traceroute(self):
         """
         Traceroute command
         """
-        params = get_input("Parameters for \"traceroute\"", self._validate_tool_params, True)
+        args = get_input("Arguments for \"traceroute\"", self._validate_tool_params, True)
 
-        if params:
-            self._run_tool("/usr/sbin/traceroute", params)
+        if args:
+            self._run_tool("/usr/sbin/traceroute", args)

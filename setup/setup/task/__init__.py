@@ -34,8 +34,10 @@ class Task(object):
         while True:
             self.main()
 
-            if not self.mandatory or self.changed:
-                break
+            if self.mandatory and not self.changed:
+                continue
+
+            break
 
     def main(self):
         """

@@ -25,7 +25,6 @@ class User(Task):
             email, password = self._get_input()
             self._create_user(email, password)
             self.changed = True
-            print "Done\n"
 
         except:
             pass

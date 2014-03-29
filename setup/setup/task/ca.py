@@ -28,7 +28,6 @@ class Ca(Task):
         try:
             self._generate_cert()
             self.changed = True
-            print "Done\n"
 
         except:
             pass

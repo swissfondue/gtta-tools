@@ -36,7 +36,6 @@ class Domain(Task):
                 self._restart_apache()
 
             self.changed = True
-            print "Done\n"
 
         except:
             pass
