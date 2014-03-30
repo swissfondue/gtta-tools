@@ -43,7 +43,7 @@ EOT
 /etc/init.d/apache2 restart
 
 # set the password back
-usermod --password `echo "XmhdtxudvzGY8f72ps2d4c4fe" | mkpasswd --password-fd=0` gtta
+/usr/sbin/usermod --password `echo "XmhdtxudvzGY8f72ps2d4c4fe" | mkpasswd --password-fd=0` gtta
 
 # set the login shell back
 sed -i '1d' /home/gtta/.bashrc
