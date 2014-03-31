@@ -7,7 +7,7 @@ from subprocess import call, Popen, PIPE
 from time import sleep
 from urllib import urlopen
 from setup.task import Task
-from setup.error import SystemCommandError
+from setup.error import SystemCommandError, QuitMenu
 from setup import show_menu, get_input
 
 _IP_REGEXP = '(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])'
@@ -59,13 +59,18 @@ class Network(Task):
         }
 
         while True:
-            choice = show_menu((
-                    "Manual Configuration",
-                    "DHCP <-- use this if you don't know what to choose",
-                    "Network Tools"
-                ),
-                allow_quit=(not self.mandatory or self.changed)
-            )
+            try:
+                choice = show_menu((
+                        "Manual Configuration",
+                        "DHCP <-- use this if you don't know what to choose",
+                        "Network Tools"
+                    ),
+                    allow_quit=(not self.mandatory or self.changed)
+                )
+
+            except QuitMenu:
+                print
+                break
 
             print
             handlers[choice]()
@@ -313,7 +318,12 @@ class Network(Task):
         while True:
             print "[Network Tools]"
 
-            choice = show_menu(("ifconfig", "route", "ip", "iptables", "ping", "traceroute"))
+            try:
+                choice = show_menu(("ifconfig", "route", "ip", "iptables", "ping", "traceroute"))
+            except QuitMenu:
+                print
+                break
+
             print
             tools[choice]()
 
