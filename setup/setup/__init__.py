@@ -13,7 +13,10 @@ def show_menu(options, allow_quit=True, timeout=None):
     if not len(options):
         raise EmptyMenuError
 
-    print 'Please choose one of the following options:\n'
+    if allow_quit:
+        print 'Please choose one of the following options (or enter "q" to quit):\n'
+    else:
+        print 'Please choose one of the following options:\n'
 
     key = 0
 
