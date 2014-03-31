@@ -64,7 +64,7 @@ class Network(Task):
                     "DHCP <-- use this if you don't know what to choose",
                     "Network Tools"
                 ),
-                allow_quit=(not self.mandatory or not self.changed)
+                allow_quit=(not self.mandatory or self.changed)
             )
 
             print
