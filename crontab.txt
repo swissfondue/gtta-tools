@@ -7,3 +7,6 @@
 */1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic package
 */1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic regenerate
 */5 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic stats
+*/1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic communityinstall
+*/1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic communityshare
+*/10 * * * *    root    cd /opt/gtta/current/web/protected && ./yiic communityrefresh
