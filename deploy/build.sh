@@ -34,7 +34,6 @@ cp $SRC/tools/crontab.txt $DST/
 mkdir $DST/tools
 cp $SRC/tools/backup/backup.sh $DST/tools/
 mkdir $DST/install/
-cp $SRC/tools/deploy/make_config.py $DST/install/
 cp $SRC/tools/deploy/make_config.py $DST/tools/
 cp $SRC/tools/deploy/run_script.py $DST/tools/
 cp -r $SRC/tools/setup $DST/tools/
