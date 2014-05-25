@@ -44,6 +44,7 @@ then
     if [ -e "$SRC/tools/deploy/scripts/$1" ]
     then
         cp $SRC/tools/deploy/scripts/$1/* $DST/install/
+        echo "$1" >> $DST/install/version
     fi
 fi
 
