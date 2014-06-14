@@ -199,43 +199,43 @@ class Network(Task):
         print '\nSaving...'
 
         try:
-            if not path.exists('%s.%s' % (_NETWORK_CONFIG_PATH , _BACKUP_EXTENSION)):
-                copy2(_NETWORK_CONFIG_PATH, '%s.%s' % (_NETWORK_CONFIG_PATH , _BACKUP_EXTENSION))
+            if not path.exists("%s.%s" % (_NETWORK_CONFIG_PATH , _BACKUP_EXTENSION)):
+                copy2(_NETWORK_CONFIG_PATH, "%s.%s" % (_NETWORK_CONFIG_PATH , _BACKUP_EXTENSION))
 
-            if not path.exists('%s.%s' % (_DNS_CONFIG_PATH , _BACKUP_EXTENSION)):
-                copy2(_DNS_CONFIG_PATH, '%s.%s' % (_DNS_CONFIG_PATH , _BACKUP_EXTENSION))
+            if not path.exists("%s.%s" % (_DNS_CONFIG_PATH , _BACKUP_EXTENSION)):
+                copy2(_DNS_CONFIG_PATH, "%s.%s" % (_DNS_CONFIG_PATH , _BACKUP_EXTENSION))
 
             # writing files
-            cfg = open(_NETWORK_CONFIG_PATH, 'w')
+            cfg = open(_NETWORK_CONFIG_PATH, "w")
             cfg.write(_STATIC_CONFIG_TEMPLATE % {
-                'address': ip,
-                'netmask': netmask,
-                'gateway': gateway,
-                'nameserver': nameserver
+                "address": ip,
+                "netmask": netmask,
+                "gateway": gateway,
+                "nameserver": nameserver
             })
             cfg.close()
 
-            cfg = open(_DNS_CONFIG_PATH, 'w')
+            cfg = open(_DNS_CONFIG_PATH, "w")
             cfg.write(_DNS_CONFIG_TEMPLATE % {
-                'nameserver' : nameserver
+                "nameserver" : nameserver
             })
             cfg.close()
 
         except Exception as e:
-            print 'FAILED (%s)\x07' % str(e)
+            print "FAILED (%s)\x07" % str(e)
             return
 
-        print 'Applying...'
+        print "Applying..."
 
         try:
             commands = (
-                'ifconfig eth0 %s netmask %s' % (ip, netmask),
-                'ifconfig eth0 down',
-                'ifconfig eth0 up',
-                'ip route flush root 0/0',
-                'ifconfig eth0 down',
-                'ifconfig eth0 up',
-                'route add default gw %s' % gateway
+                "ifconfig eth0 %s netmask %s" % (ip, netmask),
+                "ifconfig eth0 down",
+                "ifconfig eth0 up",
+                "ip route flush root 0/0",
+                "ifconfig eth0 down",
+                "ifconfig eth0 up",
+                "route add default gw %s" % gateway
             )
 
             for command in commands:
@@ -246,8 +246,11 @@ class Network(Task):
 
                 sleep(2)
 
+            # apply the setting for OpenVZ container
+            call(["vzctl set 666 --nameserver %s --save" % nameserver], shell=True)
+
         except Exception as e:
-            print 'FAILED (%s)\x07' % str(e)
+            print "FAILED (%s)\x07" % str(e)
             return
 
         self._network_test()
