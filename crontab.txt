@@ -11,3 +11,4 @@
 */1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic communityshare
 */10 * * * *    root    cd /opt/gtta/current/web/protected && ./yiic communityrefresh
 */10 * * * *    root    cd /opt/gtta/current/web/protected && ./yiic projecthold
+*/3 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic targetcheckreindex
