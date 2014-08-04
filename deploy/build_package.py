@@ -29,7 +29,7 @@ def process_package(package_path, destination):
 
     package = parse(description_path)
     print "[%s] %s %s" % (package["type"], package["name"], package["version"])
-    
+
     destination_path = path.join(destination, "%s_%s-%s.zip" % (package["type"], package["name"], package["version"]))
     current_dir = getcwd()
 
@@ -48,6 +48,9 @@ def process_package(package_path, destination):
 
 def process(source, destination, recursive):
     """Process build"""
+    source = path.abspath(source)
+    destination = path.abspath(destination)
+    
     if not path.isdir(source):
         raise Exception("Not a directory: %s" % source)
 
