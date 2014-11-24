@@ -56,6 +56,9 @@ EXT_DIR=`php -r 'echo ini_get("extension_dir");'`
 mv $SRC_DIR/ioncube.so $EXT_DIR/
 echo "zend_extension = $EXT_DIR/ioncube.so" >> /etc/php5/conf.d/ioncube.ini
 
+# increase PHP memory limit
+sed -i 's/memory_limit = .*/memory_limit = 1024M/' /etc/php5/apache2/php.ini
+
 # make directories
 for ITEM in ${DIRECTORIES[@]}
 do
