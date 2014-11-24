@@ -2,18 +2,25 @@
 	ServerAdmin webmaster@localhost
 
 	SSLEngine On
-	SSLCertificateFile /opt/gtta/security/ssl/gtta.crt
-	SSLCertificateKeyFile /opt/gtta/security/ssl/gtta.key
-	SSLCACertificateFile /opt/gtta/security/ca/ca.crt
+	SSLCertificateFile /opt/gtta/security/ssl/server.crt
+	SSLCertificateKeyFile /opt/gtta/security/ssl/server.key
+	SSLVerifyClient none
 
 	DocumentRoot /opt/gtta/current/web
+
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride All
+	</Directory>
+
+	<Location /verify>
+		SSLCACertificateFile /opt/gtta/security/ca/ca.crt
 		SSLVerifyClient optional
 		SSLVerifyDepth 10
 		SSLOptions +StdEnvVars
-	</Directory>
+		SSLRenegBufferSize 100486000
+	</Location>
+
 	<Directory /opt/gtta/current/web/>
 		Options Indexes FollowSymLinks MultiViews
 		AllowOverride All

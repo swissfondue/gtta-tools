@@ -7,17 +7,13 @@ from sys import stdout, argv, exit
 from time import sleep
 
 PIDS_PATH = "/tmp"
-
-PATHS = (
-    "/opt/gtta/scripts",
-    "/opt/gtta/scripts/system"
-)
+PATHS = ("/opt/gtta/scripts",)
 
 INTERPRETERS = {
     "py": {
         "name": "python",
         "env": {
-            "PYTHONPATH" : "/opt/gtta/scripts/lib:/opt/gtta/scripts/system/lib"
+            "PYTHONPATH": "/opt/gtta/scripts/lib"
         },
         "params": []
     },
@@ -26,8 +22,7 @@ INTERPRETERS = {
         "name": "perl",
         "env": {},
         "params": [
-            "-I/opt/gtta/scripts/lib",
-            "-I/opt/gtta/scripts/system/lib"
+            "-I/opt/gtta/scripts/lib"
         ]
     },
 }

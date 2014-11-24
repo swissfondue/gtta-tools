@@ -1,0 +1,52 @@
+{
+    "variables": {
+        "iso": "/Volumes/MUSIC/Distr/debian-6.0.10-amd64-netinst.iso"
+    },
+    "builders": [{
+        "name": "gtta-base",
+        "type": "vmware-iso",
+        "boot_command": [
+            "<esc><wait>",
+            "install ",
+            "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+            "debian-installer=en_US ",
+            "auto ",
+            "locale=en_US ",
+            "netcfg/get_hostname=gtta ",
+            "netcfg/get_domain=local ",
+            "kbd-chooser/method=us ",
+            "keyboard-configuration/xkb-keymap=us ",
+            "debconf/frontend=noninteractive ",
+            "console-setup/ask_detect=false ",
+            "console-keymaps-at/keymap=us ",
+            "<enter><wait>"
+        ],
+        "headless": true,
+        "boot_wait": "10s",
+        "disk_size": 20480,
+        "guest_os_type": "debian6",
+        "http_directory": "files",
+        "iso_checksum_type": "none",
+        "iso_url": "file://{{user `iso`}}",
+        "ssh_username": "root",
+        "ssh_password": "gtta",
+        "ssh_port": 22,
+        "ssh_wait_timeout": "60m",
+        "tools_upload_flavor": "linux",
+        "vm_name": "gtta",
+        "vmdk_name": "gtta",
+        "skip_compaction": true,
+        "output_directory": "/Volumes/MUSIC/VMs/gtta-base",
+        "shutdown_command": "shutdown -h now",
+        "vmx_data": {
+            "memsize": "1024",
+            "numvcpus": "1",
+            "cpuid.coresPerSocket": "1"
+        }
+    }],
+    "post-processors": [],
+    "provisioners": [{
+        "type": "shell",
+        "script": "scripts/build-vm.sh"
+    }]
+}

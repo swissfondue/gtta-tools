@@ -1,2 +1,0 @@
-Match user gtta
-    PasswordAuthentication no
