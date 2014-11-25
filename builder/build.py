@@ -76,6 +76,7 @@ def build_distr(version, root_password, user_password):
         mkdir("%s/tools" % destination)
         check_call("cp %s/deploy/make_config.py %s/tools" % (source_tools, destination), shell=True)
         check_call("cp %s/deploy/run_script.py %s/tools" % (source_tools, destination), shell=True)
+        check_call("cp %s/backup/backup.sh %s/tools" % (source_tools, destination), shell=True)
         check_call("cp -r %s/setup %s/tools" % (source_tools, destination), shell=True)
 
         # remove temporary files
