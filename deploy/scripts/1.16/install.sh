@@ -16,3 +16,7 @@ sed -i 's/^1.*$/1:2345:respawn:\/usr\/bin\/python \/opt\/gtta\/current\/tools\/s
 
 # increase PHP memory limit
 sed -i 's/memory_limit = .*/memory_limit = 1024M/' /etc/php5/apache2/php.ini
+
+# remove init scripts
+update-rc.d -f gtta-init remove
+rm /etc/init.d/gtta-init
