@@ -3,8 +3,8 @@
 set -e
 
 # remove system packages directory
-mv /opt/gtta/scripts/system/* /opt/gtta/scripts
-rm -r /opt/gtta/scripts/system
+cp -r /opt/gtta/versions/1.16/scripts/* /opt/gtta/scripts || true
+rm -rf /opt/gtta/scripts/system || true
 sudo -upostgres psql -c "alter user gtta with password 'cqxLvzTW96BbiYoPjiyMbiQpG'"
 
 # sudoers setup
@@ -18,5 +18,5 @@ sed -i 's/^1.*$/1:2345:respawn:\/usr\/bin\/python \/opt\/gtta\/current\/tools\/s
 sed -i 's/memory_limit = .*/memory_limit = 1024M/' /etc/php5/apache2/php.ini
 
 # remove init scripts
-update-rc.d -f gtta-init remove
-rm /etc/init.d/gtta-init
+update-rc.d -f gtta-init remove || true
+rm /etc/init.d/gtta-init || true
