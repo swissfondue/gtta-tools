@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding: utf8
 
 from ConfigParser import ConfigParser
 from os import path
@@ -13,12 +12,11 @@ properties_path = argv[1]
 configs_path = argv[2]
 
 config_files = (
-    configs_path + "/main.example.php",
-    configs_path + "/console.example.php"
+    configs_path + "/params.template.php",
 )
 
 if not path.exists(properties_path):
-    print "Properties file does not exist"
+    print "Properties file does not exist: %s" % properties_path
     exit(1)
 
 config = ConfigParser()
@@ -37,7 +35,7 @@ for config in config_files:
     data = open(config).read()
 
     for (var, value) in variables.iteritems():
-        data = data.replace('$DEPLOY_%s' % var, value)
+        data = data.replace("DEPLOY_%s" % var, value)
 
-    with open(config.replace(".example.php", ".php"), "w") as out:
+    with open(config.replace(".template.php", ".php"), "w") as out:
         out.write(data)

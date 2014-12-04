@@ -189,9 +189,7 @@ def build_update(version, key_password):
             "--copy",
             "migrations/template.php",
             "--copy",
-            "config/console.example.php",
-            "--copy",
-            "config/main.example.php",
+            "config/params.template.php",
             "--without-loader-check"
         ])
 
