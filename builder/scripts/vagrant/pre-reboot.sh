@@ -9,7 +9,7 @@ export DEBIAN_FRONTEND="noninteractive"
 # change sources list
 sed -i 's/^\(deb http:\/\/security\)/#\1/g' /etc/apt/sources.list
 sed -i 's/^\(deb-src http:\/\/security\)/#\1/g' /etc/apt/sources.list
-sed -i 's/http:\/\/ftp.nz.debian.org/http:\/\/ftp.ru.debian.org/g' /etc/apt/sources.list
+sed -i 's/http:\/\/ftp.nz.debian.org/ftp:\/\/ftp.ru.debian.org/g' /etc/apt/sources.list
 
 # install packages
 apt-get -y update
