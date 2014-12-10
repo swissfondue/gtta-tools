@@ -74,8 +74,8 @@ def build_distr(version, root_password, user_password):
         check_call("cp -r %s %s" % (source_scripts, destination), shell=True)
 
         mkdir("%s/tools" % destination)
-        check_call("cp %s/deploy/make_config.py %s/tools" % (source_tools, destination), shell=True)
-        check_call("cp %s/deploy/run_script.py %s/tools" % (source_tools, destination), shell=True)
+        check_call("cp %s/make_config.py %s/tools" % (source_tools, destination), shell=True)
+        check_call("cp %s/run_script.py %s/tools" % (source_tools, destination), shell=True)
         check_call("cp -r %s/setup %s/tools" % (source_tools, destination), shell=True)
 
         # remove temporary files
@@ -160,8 +160,8 @@ def build_update(version, key_password):
 
         # tools
         mkdir("%s/tools" % destination)
-        check_call("cp %s/deploy/make_config.py %s/tools" % (source_tools, destination), shell=True)
-        check_call("cp %s/deploy/run_script.py %s/tools" % (source_tools, destination), shell=True)
+        check_call("cp %s/make_config.py %s/tools" % (source_tools, destination), shell=True)
+        check_call("cp %s/run_script.py %s/tools" % (source_tools, destination), shell=True)
         check_call("cp %s/backup/backup.sh %s/tools" % (source_tools, destination), shell=True)
         check_call("cp -r %s/setup %s/tools" % (source_tools, destination), shell=True)
 

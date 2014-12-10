@@ -1,0 +1,48 @@
+VAGRANTFILE_API_VERSION = "2"
+
+web_root = nil
+scripts_dir = nil
+ip = nil
+
+if !Vagrant.has_plugin?("vagrant-reload") or !Vagrant.has_plugin?("vagrant-vbguest")
+    puts "\nPlease install vagrant-reload and vagrant-vbguest plugins to build the system."
+    puts "Use the following commands:"
+    puts "> vagrant plugin install vagrant-reload"
+    puts "> vagrant plugin install vagrant-vbguest\n\n"
+    abort
+end
+
+if ARGV[0] == "up"
+    printf "GTTA Web Root: "
+    web_root = $stdin.gets.chomp
+    printf "GTTA Scripts Dir: "
+    scripts_dir = $stdin.gets.chomp
+    printf "GTTA IP Address: "
+    ip = $stdin.gets.chomp
+
+    puts "\nPlease execute the following command before 'vagrant up' to bypass VirtualBox DHCP bug:"
+    puts "> VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0"
+    puts "\nYou can do that right now, in a different terminal window."
+    puts "Press <enter> to continue.\n\n"
+    $stdin.gets
+end
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.box = "dene/debian-squeeze"
+    config.vm.box_check_update = false
+    config.vm.hostname = "gtta"
+    config.vm.network "private_network", ip: ip
+    config.vm.synced_folder web_root, "/gtta_web"
+    config.vm.synced_folder scripts_dir, "/gtta_scripts"
+    config.vm.post_up_message = "GTTA development environment is up!"
+
+    config.vm.provider "virtualbox" do |vb|
+        vb.gui = true
+        vb.name = "GTTA"
+        vb.customize ["modifyvm", :id, "--memory", "1024"]
+    end
+
+    config.vm.provision "shell", path: "builder/scripts/vagrant/pre-reboot.sh"
+    config.vm.provision "reload"
+    config.vm.provision "shell", path: "builder/scripts/vagrant/post-reboot.sh"
+end

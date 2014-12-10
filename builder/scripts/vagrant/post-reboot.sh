@@ -2,25 +2,18 @@
 
 set -e
 
-if [ -z $1 ] || [ -z $2 ] || [ -z $3 ]
-then
-    echo "Usage: build-distr.sh <version> <root password> <user password>"
-    exit 1
-fi
-
 # constants and variables
-VERSION=$1
-ROOT_PW=$2
-USER_PW=$3
-SRC_DIR=/tmp/files
-ROOT_DIR=/opt/gtta
-FILES_DIR=$ROOT_DIR/files
-SECURITY_DIR=$ROOT_DIR/security
-SSL_DIR=$SECURITY_DIR/ssl
-CA_DIR=$SECURITY_DIR/ca
-SCRIPTS_DIR=$ROOT_DIR/scripts
-VERSION_DIR=$ROOT_DIR/versions/$VERSION
-SSH_DIR=/home/gtta/.ssh
+SRC_DIR="/vagrant/builder/files"
+ROOT_DIR="/opt/gtta"
+FILES_DIR="$ROOT_DIR/files"
+SECURITY_DIR="$ROOT_DIR/security"
+SSL_DIR="$SECURITY_DIR/ssl"
+CA_DIR="$SECURITY_DIR/ca"
+SCRIPTS_DIR="$ROOT_DIR/scripts"
+VERSION_DIR="$ROOT_DIR/versions/dev"
+WEB_DIR="$VERSION_DIR/web"
+TOOLS_DIR="$VERSION_DIR/tools"
+SSH_DIR="/home/gtta/.ssh"
 
 DIRECTORIES=(
     "$ROOT_DIR/config"
@@ -34,15 +27,8 @@ DIRECTORIES=(
     "$SECURITY_DIR/ca"
     "$SECURITY_DIR/keys"
     "$SECURITY_DIR/ssl"
-    "$SCRIPTS_DIR/lib"
-    "$VERSION_DIR/web"
-    "$VERSION_DIR/scripts"
-    "$VERSION_DIR/tools"
+    "$VERSION_DIR"
 )
-
-# grub timeout
-sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
-update-grub
 
 # apache configuration
 cp $SRC_DIR/virtualhost.txt /etc/apache2/sites-available/gtta
@@ -50,11 +36,6 @@ cp $SRC_DIR/virtualhost_ssl.txt /etc/apache2/sites-available/gtta-ssl
 a2ensite gtta*
 a2dissite default
 a2enmod ssl rewrite
-
-# php configuration
-EXT_DIR=`php -r 'echo ini_get("extension_dir");'`
-mv $SRC_DIR/ioncube.so $EXT_DIR/
-echo "zend_extension = $EXT_DIR/ioncube.so" >> /etc/php5/conf.d/ioncube.ini
 
 # increase PHP memory limit
 sed -i 's/memory_limit = .*/memory_limit = 1024M/' /etc/php5/apache2/php.ini
@@ -65,21 +46,20 @@ do
     mkdir -p $ITEM
 done
 
-chmod -R 0770 $FILES_DIR
-chmod -R 0770 $SECURITY_DIR
+chmod -R 0777 $FILES_DIR
+chmod -R 0775 $SECURITY_DIR
 chmod 0777 $ROOT_DIR/runtime
 
 # install web part
-tar xf $SRC_DIR/web.tgz -C $VERSION_DIR/web --strip-components=3
+ln -s /gtta_web $WEB_DIR
 
 # install scripts
-tar xf $SRC_DIR/scripts.tgz -C $VERSION_DIR/scripts --strip-components=3
+ln -s /gtta_scripts $SCRIPTS_DIR
 
 # install tools and config
-tar xf $SRC_DIR/tools.tgz -C $VERSION_DIR/tools --strip-components=3
 cp $SRC_DIR/gtta.ini $ROOT_DIR/config
 cp $SRC_DIR/update-server.pub $SECURITY_DIR/keys
-chown -R gtta:gtta $ROOT_DIR
+ln -s /vagrant $TOOLS_DIR
 
 # create a link
 ln -s $VERSION_DIR $ROOT_DIR/current
@@ -93,53 +73,45 @@ sed -i 's/^local\s\+all\s\+all\s\+ident/local all all password/g' /etc/postgresq
 service postgresql restart
 cd $VERSION_DIR/web/protected
 python $VERSION_DIR/tools/make_config.py $ROOT_DIR/config/gtta.ini $VERSION_DIR/web/protected/config
+chmod 0755 yiic
 ./yiic migrate --interactive=0
 
 # database initialization
 sudo -upostgres psql gtta -c "INSERT INTO languages(name,code,\"default\") values('English','en','t'),('Deutsch','de','f');"
-sudo -upostgres psql gtta -c "INSERT INTO system(timezone, version, version_description, demo_check_limit) VALUES('Europe/Zurich', '$VERSION', 'Initial version.', 40);"
+sudo -upostgres psql gtta -c "INSERT INTO system(timezone, version, version_description, demo_check_limit) VALUES('Europe/Zurich', 'dev', 'Initial version.', 40);"
 sudo -upostgres psql gtta -c "INSERT INTO gt_dependency_processors(name) VALUES('nmap-port');"
+sudo -upostgres psql gtta -c "INSERT INTO users(email, password, role) VALUES('test@test.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'admin');"
 
 # generate temporary SSL certificate
 openssl genrsa -out $SSL_DIR/server.key 2048
 openssl req -new -key $SSL_DIR/server.key -out $SSL_DIR/server.csr -subj "/C=CH/ST=Zurich/L=Zurich/O=Infoguard AG/OU=Infoguard AG/CN=gtta/emailAddress=info@infoguard.ch"
 openssl x509 -req -days 3650 -in $SSL_DIR/server.csr -signkey $SSL_DIR/server.key -out $SSL_DIR/server.crt
-chown -R gtta:gtta $SSL_DIR
 
 # generate CA certificate for certificate-based login
 openssl genrsa -out $CA_DIR/ca.key 2048
 openssl req -new -key $CA_DIR/ca.key -out $CA_DIR/ca.csr -subj "/C=CH/ST=Zurich/L=Zurich/O=Infoguard AG/OU=Infoguard AG/CN=gtta/emailAddress=info@infoguard.ch"
 openssl x509 -req -days 3650 -in $CA_DIR/ca.csr -signkey $CA_DIR/ca.key -out $CA_DIR/ca.crt
-chown -R gtta:gtta $CA_DIR
 
 # restart apache to apply all settings
 service apache2 restart
-
-# user passwords setup
-echo "root:$ROOT_PW" | chpasswd
-echo "gtta:$USER_PW" | chpasswd
-
-# add www-data user to gtta group
-usermod -a -G gtta www-data
-
-# SSH login setup
-mkdir $SSH_DIR
-cp $SRC_DIR/authorized_keys.txt $SSH_DIR/authorized_keys
-chown -R gtta:gtta $SSH_DIR
-chmod 0644 $SSH_DIR/authorized_keys
-echo -e "\nMatch user gtta\nPasswordAuthentication no\n" >> /etc/ssh/sshd_config
-
-# sudoers setup
-echo "Cmnd_Alias GTTA = /usr/bin/python /opt/gtta/current/tools/setup/setup.py" >> /etc/sudoers
-echo "gtta    ALL=GTTA, NOPASSWD:GTTA" >> /etc/sudoers
-
-# getty setup
-sed -i 's/^\([2-6].*\)$/#\1/g' /etc/inittab
-sed -i 's/^1.*$/1:2345:respawn:\/usr\/bin\/python \/opt\/gtta\/current\/tools\/setup\/setup.py/g' /etc/inittab
 
 # generate OpenVZ container
 cd $VERSION_DIR/web/protected
 ./yiic regenerate 1
 
+# install packages
+./yiic installpackage
+
 # crontab setup
 cp $SRC_DIR/crontab.txt /etc/cron.d/gtta
+
+# network settings
+ifconfig eth1 up
+IP_ADDRESS=`ifconfig eth1 | grep "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1`
+echo -e "\n\n\nDomain: gtta.local\nIP address: $IP_ADDRESS\n"
+echo "Please point your domain to the system's IP address. You can do that by changing"
+echo "the corresponding records on your nameserver or by modifying the local 'hosts'"
+echo "file on your workstaiton (C:\WINDOWS\system32\drivers\etc\hosts in Windows,"
+echo -e "/etc/hosts in Mac OS X and Linux).\n"
+echo "https://gtta.local - enter this URL in your browser to access the system."
+echo -e "Use the following credentials to enter the system:\n* Login: test@test.com\n* Password: 123."
