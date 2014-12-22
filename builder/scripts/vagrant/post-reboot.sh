@@ -108,6 +108,11 @@ cd $VERSION_DIR/web/protected
 # crontab setup
 cp $SRC_DIR/crontab.txt /etc/cron.d/gtta
 
+# supervisor setup
+cp $SRC_DIR/resque-*.conf /etc/supervisor/conf.d
+service supervisor stop
+service supervisor start
+
 # network settings
 ifconfig eth1 up
 IP_ADDRESS=`ifconfig eth1 | grep "inet addr" | cut -d ":" -f 2 | cut -d " " -f 1`

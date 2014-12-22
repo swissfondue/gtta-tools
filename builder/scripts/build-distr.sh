@@ -143,3 +143,8 @@ cd $VERSION_DIR/web/protected
 
 # crontab setup
 cp $SRC_DIR/crontab.txt /etc/cron.d/gtta
+
+# supervisor setup
+cp $SRC_DIR/resque-*.conf /etc/supervisor/conf.d
+service supervisor stop
+service supervisor start
