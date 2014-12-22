@@ -11,7 +11,7 @@ apt-get -y update
 apt-get -y upgrade
 apt-get -y purge exim4 exim4-daemon-light exim4-base exim4-config
 apt-get -y install linux-image-openvz-`uname -r | cut -d "-" -f 3` vzctl vzquota
-apt-get -y install apache2 postgresql make libyaml-dev ntp
+apt-get -y install apache2 postgresql make libyaml-dev ntp redis-server supervisor
 apt-get -y install libapache2-mod-php5 php5-pgsql php5-curl php5-gd php5-suhosin php-pear php5-dev
 apt-get -y install python python-psycopg2 python-dev python-pip
 

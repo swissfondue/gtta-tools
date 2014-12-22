@@ -40,6 +40,9 @@ a2enmod ssl rewrite
 # increase PHP memory limit
 sed -i 's/memory_limit = .*/memory_limit = 1024M/' /etc/php5/apache2/php.ini
 
+# enable this for composer to normally work
+echo "suhosin.executor.include.whitelist = phar" >> /etc/php5/cli/conf.d/suhosin.ini
+
 # make directories
 for ITEM in ${DIRECTORIES[@]}
 do
