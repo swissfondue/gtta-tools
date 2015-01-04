@@ -1,15 +1,4 @@
-*/1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic automation
-*/1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic gtautomation
-*/1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic email
 */1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic vulntracker
 */1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic checkupdate
-*/1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic update
-*/1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic package
-*/1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic regenerate
-*/5 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic stats
-*/1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic communityinstall
-*/1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic communityshare
 */10 * * * *    root    cd /opt/gtta/current/web/protected && ./yiic projecthold
-*/3 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic targetcheckreindex
 0 */3 * * *     root    cd /opt/gtta/current/web/protected && ./yiic filecleaner
-*/1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic modifiedpackages
