@@ -26,6 +26,7 @@ DIRECTORIES=(
     "$ROOT_DIR/config"
     "$ROOT_DIR/runtime"
     "$FILES_DIR/attachments"
+    "$FILES_DIR/backups"
     "$FILES_DIR/header-images"
     "$FILES_DIR/logos"
     "$FILES_DIR/rating-images"
