@@ -38,8 +38,10 @@ a2ensite gtta*
 a2dissite default
 a2enmod ssl rewrite
 
-# increase PHP memory limit
+# increase PHP limits
 sed -i 's/memory_limit = .*/memory_limit = 1024M/' /etc/php5/apache2/php.ini
+sed -i 's/upload_max_filesize = .*/upload_max_filesize = 1024M/' /etc/php5/apache2/php.ini
+sed -i 's/post_max_size = .*/post_max_size = 1024M/' /etc/php5/apache2/php.ini
 
 # enable this for composer to normally work
 echo "suhosin.executor.include.whitelist = phar" >> /etc/php5/cli/conf.d/suhosin.ini
