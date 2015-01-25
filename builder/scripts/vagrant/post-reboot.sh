@@ -18,6 +18,7 @@ SSH_DIR="/home/gtta/.ssh"
 DIRECTORIES=(
     "$ROOT_DIR/config"
     "$ROOT_DIR/runtime"
+    "$ROOT_DIR/runtime/bg"
     "$FILES_DIR/attachments"
     "$FILES_DIR/backups"
     "$FILES_DIR/header-images"
