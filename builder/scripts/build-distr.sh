@@ -85,7 +85,7 @@ chown -R gtta:gtta $ROOT_DIR
 ln -s $VERSION_DIR $ROOT_DIR/current
 
 # database setup
-sudo -upostgres psql -c "create database gtta"
+sudo -upostgres psql -c "create database gtta encoding 'utf-8'"
 sudo -upostgres psql -c "create user gtta with password 'cqxLvzTW96BbiYoPjiyMbiQpG'"
 sudo -upostgres psql -c "grant all on database gtta to gtta"
 sudo -upostgres psql gtta < $VERSION_DIR/web/protected/data/schema.sql

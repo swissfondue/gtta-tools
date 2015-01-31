@@ -37,3 +37,9 @@ chmod 0755 /etc/network/if-pre-up.d/iptables
 
 # debian image
 wget -q -O /var/lib/vz/template/cache/debian-7.0-i386-minimal.tar.gz http://download.openvz.org/template/precreated/debian-7.0-x86-minimal.tar.gz
+
+# locale setup
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+locale-gen
+update-locale LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8
+
