@@ -89,7 +89,7 @@ chown -R gtta:gtta $ROOT_DIR
 ln -s $VERSION_DIR $ROOT_DIR/current
 
 # database setup
-sudo -upostgres psql -c "create database gtta"
+sudo -upostgres psql -c "create database gtta encoding 'utf-8'"
 sudo -upostgres psql -c "create user gtta with password 'cqxLvzTW96BbiYoPjiyMbiQpG'"
 sudo -upostgres psql -c "grant all on database gtta to gtta"
 sudo -upostgres psql gtta < $VERSION_DIR/web/protected/data/schema.sql
@@ -101,6 +101,7 @@ python $VERSION_DIR/tools/make_config.py $ROOT_DIR/config/gtta.ini $VERSION_DIR/
 
 # database initialization
 sudo -upostgres psql gtta -c "INSERT INTO languages(name,code,\"default\") values('English','en','t'),('Deutsch','de','f');"
+sudo -upostgres psql gtta -c "UPDATE languages SET user_default = 't' WHERE id = 1;"
 sudo -upostgres psql gtta -c "INSERT INTO system(timezone, version, version_description, demo_check_limit) VALUES('Europe/Zurich', '$VERSION', 'Initial version.', 40);"
 sudo -upostgres psql gtta -c "INSERT INTO gt_dependency_processors(name) VALUES('nmap-port');"
 
