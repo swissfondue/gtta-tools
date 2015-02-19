@@ -2,3 +2,4 @@
 */1 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic checkupdate
 */10 * * * *    root    cd /opt/gtta/current/web/protected && ./yiic projecthold
 0 */3 * * *     root    cd /opt/gtta/current/web/protected && ./yiic filecleaner
+*/10 * * * *     root    cd /opt/gtta/current/web/protected && ./yiic timesessioncleaner
