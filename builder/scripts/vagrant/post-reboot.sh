@@ -85,7 +85,7 @@ chmod 0755 yiic
 
 # database initialization
 sudo -upostgres psql gtta -c "INSERT INTO languages(name,code,\"default\") values('English','en','t'),('Deutsch','de','f');"
-sudo -upostgres psql gtta -c "INSERT INTO system(timezone, version, version_description, demo_check_limit) VALUES('Europe/Zurich', 'dev', 'Initial version.', 40);"
+sudo -upostgres psql gtta -c "INSERT INTO system(timezone, version, version_description) VALUES('Europe/Zurich', 'dev', 'Initial version.');"
 sudo -upostgres psql gtta -c "INSERT INTO gt_dependency_processors(name) VALUES('nmap-port');"
 sudo -upostgres psql gtta -c "INSERT INTO users(email, password, role) VALUES('test@test.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'admin');"
 
