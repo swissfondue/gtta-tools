@@ -1,45 +1,60 @@
-# coding: utf-8
+# coding: utf8
 
 from ConfigParser import ConfigParser
 from psycopg2 import connect
-from setup.error import NotImplementedError
 
 _CONFIG_PATH = "/opt/gtta/config/gtta.ini"
 _DATABASE_NAME = "gtta"
 _DATABASE_USER = "gtta"
-_DATABASE_PASSWORD = "cqxLvzTW96BbiYoPjiyMbiQpG"
 
 
 class Task(object):
     """Base task class"""
     NAME = "Base Task"
-    DESCRIPTION = "Base task that does nothing."
-    FIRST_TIME_ONLY = False
+    SKIP_FOR_SYSTEM_TYPES = ()
 
     def __init__(self):
         """Constructor"""
         self.changed = False
         self.mandatory = False
-        self.is_startup = False
+        self.automatic = False
 
-    def run(self, mandatory=False):
+    def run(self, mandatory=False, automatic=False):
         """Run task"""
         self.mandatory = mandatory
+        self.automatic = automatic
 
         while True:
-            self.main()
+            if self.automatic:
+                self.main_automatic()
+            else:
+                self.main()
 
-            if self.mandatory and not self.changed:
+            if self.mandatory and not self.changed and not self.automatic:
                 continue
 
             break
+
+    def main_automatic(self):
+        """Main automatic task function"""
+        raise NotImplementedError("%s.main_automatic" % self.__class__.__name__)
 
     def main(self):
         """Main task function"""
         raise NotImplementedError("%s.main" % self.__class__.__name__)
 
+    def print_manual_only_text(self, text, line_feed=True):
+        """Print text only for manual type of configuration"""
+        if self.automatic:
+            return
+
+        if line_feed:
+            print text
+        else:
+            print text,
+
     def read_settings(self):
-        """Read GTTA settings"""
+        """Read settings"""
         config = ConfigParser()
         config.read(_CONFIG_PATH)
         sections = {}
@@ -68,4 +83,7 @@ class Task(object):
 
     def connect_db(self):
         """Connect to db"""
-        return connect("dbname=%s user=%s password=%s" % (_DATABASE_NAME, _DATABASE_USER, _DATABASE_PASSWORD))
+        settings = self.read_settings()
+        password = settings["database"]["password"]
+
+        return connect("dbname=%s user=%s password=%s" % (_DATABASE_NAME, _DATABASE_USER, password))

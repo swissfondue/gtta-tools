@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+# coding: utf8
+
 
 class SetupError(Exception):
     """Base class for all setup errors"""
@@ -14,21 +15,21 @@ class SetupError(Exception):
 
         return message
 
+
 class InvalidTaskError(SetupError):
     """Task not found"""
     pass
 
-class NotImplementedError(SetupError):
-    """Method not implemented"""
-    pass
 
 class EmptyMenuError(SetupError):
     """Menu is empty"""
     pass
 
+
 class QuitMenu(SetupError):
     """Quit from menu"""
     pass
+
 
 class SystemCommandError(SetupError):
     """Error executing system command"""
