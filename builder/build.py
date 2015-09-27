@@ -82,26 +82,6 @@ def build_distr(version, root_password, user_password):
         for entry in CLEAN_LIST:
             check_call("find %s -iname %s | xargs rm -rf" % (destination, entry), shell=True)
 
-        # encode PHP files
-        print "* Encoding files"
-
-        check_call([
-            "ioncube53",
-            "%s/web" % destination,
-            "-o",
-            "%s/web-encoded" % destination,
-            "--copy",
-            "migrations/template.php",
-            "--copy",
-            "config/console.example.php",
-            "--copy",
-            "config/main.example.php",
-            "--without-loader-check"
-        ])
-
-        check_call("rm -r %s/web" % destination, shell=True)
-        check_call("mv %s/web-encoded %s/web" % (destination, destination), shell=True)
-
         # compress
         print "* Compressing"
 
