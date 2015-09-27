@@ -77,6 +77,7 @@ def build_distr(version, root_password, user_password):
         check_call("cp %s/make_config.py %s/tools" % (source_tools, destination), shell=True)
         check_call("cp %s/run_script.py %s/tools" % (source_tools, destination), shell=True)
         check_call("cp -r %s/setup %s/tools" % (source_tools, destination), shell=True)
+        check_call("cp -r %s/git %s/tools" % (source_tools, destination), shell=True)
 
         # remove temporary files
         for entry in CLEAN_LIST:
@@ -164,6 +165,7 @@ def build_update(version, key_password):
         check_call("cp %s/run_script.py %s/tools" % (source_tools, destination), shell=True)
         check_call("cp %s/backup/backup.sh %s/tools" % (source_tools, destination), shell=True)
         check_call("cp -r %s/setup %s/tools" % (source_tools, destination), shell=True)
+        check_call("cp -r %s/git %s/tools" % (source_tools, destination), shell=True)
 
         # install scripts
         mkdir("%s/install" % destination)
