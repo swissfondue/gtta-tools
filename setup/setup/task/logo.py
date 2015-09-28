@@ -3,46 +3,23 @@
 from setup.task import Task
 
 _GTTA_LOGO = """
-                                                           ````
-                                                       `...`.``.`````
-                                                    `...-.--////:::-::-.`.``        ```
-                                                   ...:soshhyooosyyhyhyyys+:--`  `..--....`
-                                                 `--/yyhhhhhhhhhhhhhhhhhhhhhy+----+hmNMms.-.
-                                                `.-+sshhhhhhhhhhhhhhhhhhyyyyyhy+--mMMMMMMh.-.
-                                               `--+yhhhhhhhhhhhhhhhso//+osso+//os::hMhdMMM:-.
-                                               ..+hhhysooossyhhhhs:/yNMMMMMNmdhs:/:-:dMMMM-..
-                                         ` `  .-:hy+/oydddhs/:sho:dMNmhyyhysdmdyyy:-.dMMMs..`
-                                        .-/oo:..+//dMMMMMmmNMN+:-Nohhdmmsoyy-:hmdsm:-:dh+..`
-                                      `-+NMMMm-..odMMMmdhysssyhohysmmmmh`ydy/./mmd+y-....`
-                                     ..oMMMMMN---Nohhooo/sdmmmmmddmmmdmm/-.-+/hyyhym..`
-                                     .-NMMMdys-./N/m/smms::mmdhhhhssyyhdhs++yydMMMMm..
-                                     .-NMMNNMMy.-N+h:-::+-:dyomdsyNMMydMMMMMMMMMMMM/..
-                                     `-yMMMMMMM/.+msds//:/sssMMmhNMMMNMMMMMMMMMMNh:.-
-                                      .-smMNmds:.-+h+oohmMMMMMMMMMMMNMmhmmmmmmmdo..`
-                                       `.---:--``---omMMMMMMMMMMmhhmNMhmMMMMMd+...
-                                                  `.-:ohNMMMMMMMMMMdhhNNhdy+-..`
-                                           `--://:-``..-.-:-oyhdddddhyo/--.``
-                                        `-ohhyyyyhhhs+: .`-+/:----::/++shhs-`    ```
-                                       `ohy+``    `.+yy+`-yhhhohhhhhhhhhhhhs:``.---....
-                                      .yhy.`     ``.-:`..oshhhhohhhhhyhshhhho:.-yhhhyo-.
-                                     -yhy.     `.:+yho--ohhhhhh+syhhh/+yhhhhhh/.-yhhhho-`
-                                    .yhh-`    .`+hhhy:-+hhhhhhho:ohhh./hhhhhhhh-./hhhho-.
-                                   `yhh:      .`:hhh+./hhhhhhhhy./hh/`shhhhhhhh/.-hhhy:-`
-                                  `yhho`      ..`/yh:.+hhhhhhhhh/-hs`:hhhhhhhhh:./sso--`
-                                 `yhhy-      `..-`..-..:+oyyyyyy+.+..shhhhhhyo:`-:-..:-`
-                                .yhhhs.    -/osooso+..::-.....--:::-.------..---/+oshyoo/-`
-                               -yhhhhy`    `..//:os-.:::oys/yy/-//:-+o::oy/++/::.-/+-/s+--`
-                              -yhhhhhh`     ```.:-` ``.++:-:o-. `` `````.:/..-:.``..--````
-                             .yhhhhhhh.               ``` ````            ``
-                            .yhhhhhhhh/        `````   `````       `.--.```  `````   `````
-                           `yhhhhhhhhhy`       yhhhh   shhhh:   `+yhhhhhhy- .yhhhy`.ohhhh-
-                           ``:+shhhhhhh+       yhhhh   shhhh:  -hhhhhsooos-  .yhhhyyhhhh-
-                               ` ./shhhh+      yhhhh   shhhh:  /hhhhy-` ``.   .yhhhhhhh-
-                                    `-/shs-    shhhhs++hhhhh:  .shhhhhhhhy-    .hhhhhh:
-                                        `:oo+-``/syso/.+ssss-    -/ossssso-   `-hhhhh:
-                                            `:oo/-.`                 `        :hhhhh/`
-                                                ./oooo+++++oooooo+++++++++oso+yhhhh+
-                                                                          ..`      `
+                                            ./+-`
+                                        `-ohho+yhs/.
+                                    `./yhy/.    `:ohyo-`
+                                 `:ohh+-`           ./yhs/.`
+                                +ms/.        ````      `-omh    ........` ........`   ....`
+                                sM`       `+hdmmds.       hm   -NNNNNNNN+.NNNNNNNNo  :NNNNy
+                                sM`       yMMd:yMMd       hm   `//dMMN//-`//hMMM//-  hMMdMM.
+                                sM`      `NMM'            hm      yMMm      sMMN    :MMd/MMy
+                                sM`      .MMM  mmmm       hm      yMMm      sMMN    hMMo.NMM-
+                                sM`      .NMM...MMM       hm      yMMm      sMMN   :MMMNmMMMy
+                                sM`       yMMmohMMM       hm      yMMm      sMMN   hMMh--+MMM.
+                                oM:`      `+yhhs'ss     `-dm      :++/      -+++  `+++-  `+++-
+                                `/shy+-              ./shy+.
+                                   `-+yds:`       -+hho:`
+                                       `:shh+-./ydy/.`
+                                          `.+yho-`
+
 
                          GTTA IS NOW READY TO USE. PLEASE CONTINUE YOUR CONFIGURATION IN THE WEB BROWSER.
                                              PRESS ENTER TO GO BACK TO THE MAIN MENU
