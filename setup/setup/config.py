@@ -6,7 +6,6 @@ FIRST_TIME_TASKS = (
     "network",
     "domain",
     "user",
-    "data",
     "info",
     "logo"
 )
@@ -18,7 +17,6 @@ TASKS = (
     "network",
     "domain",
     "user",
-    "data",
     "login",
     "reboot",
 )
