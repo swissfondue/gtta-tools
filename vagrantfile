@@ -2,6 +2,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 web_root = nil
 scripts_dir = nil
+community = nil
 ip = nil
 
 if !Vagrant.has_plugin?("vagrant-reload") or !Vagrant.has_plugin?("vagrant-vbguest")
@@ -17,6 +18,10 @@ if ARGV[0] == "up"
     web_root = $stdin.gets.chomp
     printf "GTTA Scripts Dir: "
     scripts_dir = $stdin.gets.chomp
+    printf "GTTA Community: "
+    community = $stdin.gets.chomp
+    printf "GTTA Lust: "
+    lust = $stdin.gets.chomp
     printf "GTTA IP Address: "
     ip = $stdin.gets.chomp
 
@@ -34,6 +39,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network "private_network", ip: ip
     config.vm.synced_folder web_root, "/gtta_web"
     config.vm.synced_folder scripts_dir, "/gtta_scripts"
+    config.vm.synced_folder community, "/community"
+    config.vm.synced_folder lust, "/lust"
     config.vm.post_up_message = "GTTA development environment is up!"
 
     config.vm.provider "virtualbox" do |vb|
