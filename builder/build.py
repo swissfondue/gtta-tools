@@ -155,7 +155,7 @@ def build_update(version, key_password):
         mkdir("%s/tools" % destination)
         check_call("cp %s/make_config.py %s/tools" % (source_tools, destination), shell=True)
         check_call("cp %s/run_script.py %s/tools" % (source_tools, destination), shell=True)
-        check_call("rsync -a --exclude='system' %s/setup %s/tools" % (source_tools, destination), shell=True)
+        check_call("cp %s/setup %s/tools" % (source_tools, destination), shell=True)
 
         # install scripts
         mkdir("%s/install" % destination)
@@ -277,7 +277,7 @@ def main():
     except KeyboardInterrupt:
         print "Command execution interrupted."
 
-    #cleanup()
+    cleanup()
 
 if __name__ == "__main__":
     main()
