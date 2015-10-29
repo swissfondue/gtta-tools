@@ -38,7 +38,7 @@ $GIT_CMD config --global user.email `whoami`@test.com
 
 if [ ! -z $KEY_PATH ] && [ -e $KEY_PATH ];
 then
-    HOMEDIR=$( getent passwd `whoami` | cut -d: -f6 )
+    HOMEDIR=$(getent passwd `whoami` | cut -d: -f6)
     cp $KEY_PATH $HOMEDIR/.ssh/
     chmod 600 $HOMEDIR/.ssh/$(basename $KEY_PATH)
 fi;

@@ -48,16 +48,15 @@ else
 fi;
 
 MESSAGE=$(date +%s | sha256sum | base64 | head -c 32 ; echo)
+export GIT_SSL_NO_VERIFY=true
 GIT_CMD="git --git-dir $DIR/.git --work-tree $DIR"
-
-
 CHANGED_COUNT=$($GIT_CMD status --porcelain 2>/dev/null | wc -l)
 
 if [ $CHANGED_COUNT == 0 ];
 then
     $GIT_CMD fetch --all
     $GIT_CMD merge origin/master
-    $GIT_CMD push
+    $GIT_CMD push -u origin master
 else
     $GIT_CMD add .
     $GIT_CMD commit -m $MESSAGE;
@@ -67,5 +66,5 @@ else
 
     $GIT_CMD merge old-master -X $STRATEGY
     $GIT_CMD branch -D old-master
-    $GIT_CMD push
+    $GIT_CMD push -u origin master
 fi;
