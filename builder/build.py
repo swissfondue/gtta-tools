@@ -25,7 +25,6 @@ def cleanup():
     clean_list = (
         "packer_cache",
         "files/web.tgz",
-        "files/scripts.tgz",
         "files/tools.tgz",
         "/tmp/gtta.zip",
         "/tmp/gtta.sig",
@@ -58,11 +57,9 @@ def build_distr(version, root_password, user_password):
     print "Building version %s" % version
 
     source_web = "../../web"
-    source_scripts = "../../scripts"
     source_tools = "../../tools"
     destination = "/tmp/gtta"
     web_zip = "files/web.tgz"
-    scripts_zip = "files/scripts.tgz"
     tools_zip = "files/tools.tgz"
 
     mkdir(destination)
@@ -75,7 +72,7 @@ def build_distr(version, root_password, user_password):
         mkdir("%s/tools" % destination)
         check_call("cp %s/make_config.py %s/tools" % (source_tools, destination), shell=True)
         check_call("cp %s/run_script.py %s/tools" % (source_tools, destination), shell=True)
-        check_call("rsync -a --exclude='system' %s/setup %s/tools" % (source_tools, destination), shell=True)
+        check_call("cp -r %s/setup %s/tools" % (source_tools, destination), shell=True)
 
         # remove temporary files
         for entry in CLEAN_LIST:
@@ -105,7 +102,6 @@ def build_distr(version, root_password, user_password):
         print "* Compressing"
 
         check_call("tar czf %s %s/web" % (web_zip, destination), shell=True)
-        check_call("tar czf %s %s" % (scripts_zip, source_scripts), shell=True)
         check_call("tar czf %s %s/tools" % (tools_zip, destination), shell=True)
 
     except CalledProcessError:

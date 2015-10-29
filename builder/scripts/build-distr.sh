@@ -18,7 +18,6 @@ FILES_DIR=$ROOT_DIR/files
 SECURITY_DIR=$ROOT_DIR/security
 SSL_DIR=$SECURITY_DIR/ssl
 CA_DIR=$SECURITY_DIR/ca
-SCRIPTS_DIR=$ROOT_DIR/scripts
 VERSION_DIR=$ROOT_DIR/versions/$VERSION
 SSH_DIR=/home/gtta/.ssh
 
@@ -36,7 +35,6 @@ DIRECTORIES=(
     "$SECURITY_DIR/ca"
     "$SECURITY_DIR/keys"
     "$SECURITY_DIR/ssl"
-    "$SCRIPTS_DIR/lib"
     "$VERSION_DIR/web"
     "$VERSION_DIR/scripts"
     "$VERSION_DIR/tools"
@@ -75,9 +73,6 @@ chmod 0777 $ROOT_DIR/runtime
 
 # install web part
 tar xf $SRC_DIR/web.tgz -C $VERSION_DIR/web --strip-components=3
-
-# install scripts
-tar xf $SRC_DIR/scripts.tgz -C $VERSION_DIR/scripts --strip-components=3
 
 # install tools and config
 tar xf $SRC_DIR/tools.tgz -C $VERSION_DIR/tools --strip-components=3
