@@ -56,7 +56,7 @@ fi;
 
 if [ $STRATEGY == "theirs" ];
 then
-	STRATEGY="ours";
+    STRATEGY="ours";
 else
     STRATEGY="theirs";
 fi;
