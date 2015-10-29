@@ -1,35 +1,49 @@
 #!/bin/bash
 
-# Parse args
-while [[ $# > 1 ]]
-do
-key=$1
+set -e
 
-case $key in
-    -d|--dir)
-    DIR=$2
-    shift;;
-    -s|--strategy)
-    STRATEGY=$2
-    shift;;
-    -k|--key)
-    KEY_FILENAME=$2
-    shift;;
-    *)
-    ;;
-esac
-shift
+# Parse args
+while [[ $# > 1 ]];
+do
+    key=$1
+
+    case $key in
+        -d|--dir)
+            DIR=$2
+            shift
+            ;;
+
+        -s|--strategy)
+            STRATEGY=$2
+            shift
+            ;;
+
+        -k|--key)
+            KEY_FILENAME=$2
+            shift
+            ;;
+
+        -e|--e-mail)
+            EMAIL=$2
+            shift
+            ;;
+
+        *)
+            ;;
+    esac
+
+    shift
 done
+
+if [ -z $DIR ] || [ -z $STRATEGY ] || [ -z $EMAIL ];
+then
+    echo "Invalid arguments."
+    exit 1;
+fi;
 
 if [ ! -d $DIR/.git ];
 then
     echo "Git not inited. Run init.sh."
-    exit 1;
-fi;
-
-if [ -z $DIR ] || [ -z $STRATEGY ];
-then
-    echo "Invalid arguments."
     exit 1;
 fi;
 
@@ -51,6 +65,9 @@ MESSAGE=$(date +%s | sha256sum | base64 | head -c 32 ; echo)
 export GIT_SSL_NO_VERIFY=true
 GIT_CMD="git --git-dir $DIR/.git --work-tree $DIR"
 CHANGED_COUNT=$($GIT_CMD status --porcelain 2>/dev/null | wc -l)
+MESSAGE="$(date +'%Y-%m-%d %H:%M'), $EMAIL, $CHANGED_COUNT modified file(s)"
+
+echo $MESSAGE > /tmp/git_message.txt
 
 if [ $CHANGED_COUNT == 0 ];
 then
@@ -59,7 +76,7 @@ then
     $GIT_CMD push -u origin master
 else
     $GIT_CMD add .
-    $GIT_CMD commit -m $MESSAGE;
+    $GIT_CMD commit -m "$MESSAGE"
     $GIT_CMD fetch --all
     $GIT_CMD branch old-master
     $GIT_CMD reset --hard origin/master

@@ -16,7 +16,7 @@ chown -R gtta:gtta /opt/gtta/files/system
 # apt-get variables
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 export DEBIAN_FRONTEND=noninteractive
-echo "deb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt.sources.list
+echo "deb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list
 
 # refresh packages
 apt-get -y update
