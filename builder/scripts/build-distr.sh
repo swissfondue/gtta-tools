@@ -32,6 +32,7 @@ DIRECTORIES=(
     "$FILES_DIR/rating-images"
     "$FILES_DIR/reports"
     "$FILES_DIR/report-templates"
+    "$FILES_DIR/system"
     "$SECURITY_DIR/ca"
     "$SECURITY_DIR/keys"
     "$SECURITY_DIR/ssl"
