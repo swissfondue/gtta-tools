@@ -25,7 +25,6 @@ def cleanup():
     clean_list = (
         "packer_cache",
         "files/web.tgz",
-        "files/scripts.tgz",
         "files/tools.tgz",
         "/tmp/gtta.zip",
         "/tmp/gtta.sig",
@@ -58,11 +57,9 @@ def build_distr(version, root_password, user_password):
     print "Building version %s" % version
 
     source_web = "../../web"
-    source_scripts = "../../scripts"
     source_tools = "../../tools"
     destination = "/tmp/gtta"
     web_zip = "files/web.tgz"
-    scripts_zip = "files/scripts.tgz"
     tools_zip = "files/tools.tgz"
 
     mkdir(destination)
@@ -71,7 +68,6 @@ def build_distr(version, root_password, user_password):
         print "* Copying files"
 
         check_call("cp -r %s %s" % (source_web, destination), shell=True)
-        check_call("cp -r %s %s" % (source_scripts, destination), shell=True)
 
         mkdir("%s/tools" % destination)
         check_call("cp %s/make_config.py %s/tools" % (source_tools, destination), shell=True)
@@ -86,7 +82,6 @@ def build_distr(version, root_password, user_password):
         print "* Compressing"
 
         check_call("tar czf %s %s/web" % (web_zip, destination), shell=True)
-        check_call("tar czf %s %s/scripts" % (scripts_zip, destination), shell=True)
         check_call("tar czf %s %s/tools" % (tools_zip, destination), shell=True)
 
     except CalledProcessError:
@@ -121,7 +116,6 @@ def build_update(version, key_password):
     print "Building version %s" % version
 
     source_web = "../../web"
-    source_scripts = "../../scripts"
     source_tools = "../../tools"
     destination = "/tmp/gtta"
     zip_path = "/tmp/gtta.zip"
@@ -135,14 +129,12 @@ def build_update(version, key_password):
         print "* Copying files"
 
         check_call("cp -r %s %s" % (source_web, destination), shell=True)
-        check_call("cp -r %s %s" % (source_scripts, destination), shell=True)
         check_call("cp files/crontab.txt %s" % destination, shell=True)
 
         # tools
         mkdir("%s/tools" % destination)
         check_call("cp %s/make_config.py %s/tools" % (source_tools, destination), shell=True)
         check_call("cp %s/run_script.py %s/tools" % (source_tools, destination), shell=True)
-        check_call("cp %s/backup/backup.sh %s/tools" % (source_tools, destination), shell=True)
         check_call("cp -r %s/setup %s/tools" % (source_tools, destination), shell=True)
 
         # install scripts
