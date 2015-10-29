@@ -61,13 +61,10 @@ else
     STRATEGY="theirs";
 fi;
 
-MESSAGE=$(date +%s | sha256sum | base64 | head -c 32 ; echo)
 export GIT_SSL_NO_VERIFY=true
 GIT_CMD="git --git-dir $DIR/.git --work-tree $DIR"
 CHANGED_COUNT=$($GIT_CMD status --porcelain 2>/dev/null | wc -l)
 MESSAGE="$(date +'%Y-%m-%d %H:%M'), $EMAIL, $CHANGED_COUNT modified file(s)"
-
-echo $MESSAGE > /tmp/git_message.txt
 
 if [ $CHANGED_COUNT == 0 ];
 then
