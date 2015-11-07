@@ -23,3 +23,4 @@ apt-get -y update
 
 apt-get purge git
 apt-get install git=1:1.7.10.4-1~bpo60+1
+apt-get install php5-mcrypt
