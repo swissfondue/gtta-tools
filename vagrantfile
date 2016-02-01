@@ -31,12 +31,6 @@ if (ARGV[0] == "up" or ARGV[0] == "provision") and
 end
 
 if ARGV[0] == "up"
-    web_root = ENV["GTTA_WEB_PATH"]
-    scripts_dir = ENV["GTTA_SCRIPTS_PATH"]
-    community = ENV["GTTA_COMMUNITY_PATH"]
-    lust = ENV["GTTA_LUST_PATH"]
-    ip = ENV["GTTA_IP"]
-
     puts "\nPlease execute the following command before 'vagrant up' to bypass VirtualBox DHCP bug:"
     puts "> VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0"
     puts "\nYou can do that right now, in a different terminal window."
@@ -50,7 +44,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.hostname = "gtta"
 
     if ARGV[0] == "up"
-        config.vm.network "private_network", ip: ip
+        config.vm.network "private_network", ip: ENV["GTTA_IP"]
         config.vm.post_up_message = "GTTA development environment is up!"
 
         config.vm.provider "virtualbox" do |vb|
