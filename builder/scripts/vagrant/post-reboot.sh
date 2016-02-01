@@ -103,6 +103,8 @@ cd $VERSION_DIR/web/protected
 ./yiic regenerate 1
 
 # install packages
+./yiic installpackage /opt/gtta/scripts/lib/core
+./yiic installpackage /opt/gtta/scripts/lib/emailgrabber
 ./yiic installpackage
 
 # crontab setup
