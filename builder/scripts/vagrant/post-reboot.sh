@@ -33,19 +33,16 @@ DIRECTORIES=(
 )
 
 # apache configuration
-cp $SRC_DIR/virtualhost.txt /etc/apache2/sites-available/gtta
-cp $SRC_DIR/virtualhost_ssl.txt /etc/apache2/sites-available/gtta-ssl
+cp $SRC_DIR/virtualhost.txt /etc/apache2/sites-available/gtta.conf
+cp $SRC_DIR/virtualhost_ssl.txt /etc/apache2/sites-available/gtta-ssl.conf
 a2ensite gtta*
-a2dissite default
+a2dissite 000-default
 a2enmod ssl rewrite
 
 # increase PHP limits
 sed -i 's/memory_limit = .*/memory_limit = 1024M/' /etc/php5/apache2/php.ini
 sed -i 's/upload_max_filesize = .*/upload_max_filesize = 1024M/' /etc/php5/apache2/php.ini
 sed -i 's/post_max_size = .*/post_max_size = 1024M/' /etc/php5/apache2/php.ini
-
-# enable this for composer to normally work
-echo "suhosin.executor.include.whitelist = phar" >> /etc/php5/cli/conf.d/suhosin.ini
 
 # make directories
 for ITEM in ${DIRECTORIES[@]}
@@ -58,15 +55,15 @@ chmod -R 0775 $SECURITY_DIR
 chmod 0777 $ROOT_DIR/runtime
 
 # install web part
-ln -s /gtta_web $WEB_DIR
+ln -s /gtta/web $WEB_DIR
 
 # install scripts
-ln -s /gtta_scripts $SCRIPTS_DIR
+ln -s /gtta/scripts $SCRIPTS_DIR
 
 # install tools and config
 cp $SRC_DIR/gtta.ini $ROOT_DIR/config
 cp $SRC_DIR/update-server.pub $SECURITY_DIR/keys
-ln -s /vagrant $TOOLS_DIR
+ln -s /gtta/tools $TOOLS_DIR
 
 # create a link
 ln -s $VERSION_DIR $ROOT_DIR/current
@@ -76,7 +73,7 @@ sudo -upostgres psql -c "create database gtta"
 sudo -upostgres psql -c "create user gtta with password 'cqxLvzTW96BbiYoPjiyMbiQpG'"
 sudo -upostgres psql -c "grant all on database gtta to gtta"
 sudo -upostgres psql gtta < $VERSION_DIR/web/protected/data/schema.sql
-sed -i 's/^local\s\+all\s\+all\s\+ident/local all all password/g' /etc/postgresql/8.4/main/pg_hba.conf
+sed -i 's/^local\s\+all\s\+all\s\+peer/local all all password/g' /etc/postgresql/9.1/main/pg_hba.conf
 service postgresql restart
 cd $VERSION_DIR/web/protected
 python $VERSION_DIR/tools/make_config.py $ROOT_DIR/config/gtta.ini $VERSION_DIR/web/protected/config
@@ -86,7 +83,6 @@ chmod 0755 yiic
 # database initialization
 sudo -upostgres psql gtta -c "INSERT INTO languages(name,code,\"default\") values('English','en','t'),('Deutsch','de','f');"
 sudo -upostgres psql gtta -c "INSERT INTO system(timezone, version, version_description) VALUES('Europe/Zurich', 'dev', 'Initial version.');"
-sudo -upostgres psql gtta -c "INSERT INTO gt_dependency_processors(name) VALUES('nmap-port');"
 sudo -upostgres psql gtta -c "INSERT INTO users(email, password, role) VALUES('test@test.com', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'admin');"
 
 # generate temporary SSL certificate

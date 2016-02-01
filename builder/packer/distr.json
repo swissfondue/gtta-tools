@@ -1,6 +1,6 @@
 {
     "variables": {
-        "vmx": "/Volumes/MUSIC/VMs/gtta-base/gtta.vmx",
+        "vmx": null,
         "version": null,
         "root_password": null,
         "user_password": null

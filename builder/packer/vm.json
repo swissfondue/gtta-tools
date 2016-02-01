@@ -1,6 +1,6 @@
 {
     "variables": {
-        "iso": "/Volumes/MUSIC/Distr/debian-6.0.10-amd64-netinst.iso"
+        "iso": null
     },
     "builders": [{
         "name": "gtta-base",

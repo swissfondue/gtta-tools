@@ -41,21 +41,12 @@ DIRECTORIES=(
     "$VERSION_DIR/tools"
 )
 
-# grub timeout
-sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
-update-grub
-
 # apache configuration
-cp $SRC_DIR/virtualhost.txt /etc/apache2/sites-available/gtta
-cp $SRC_DIR/virtualhost_ssl.txt /etc/apache2/sites-available/gtta-ssl
+cp $SRC_DIR/virtualhost.txt /etc/apache2/sites-available/gtta.conf
+cp $SRC_DIR/virtualhost_ssl.txt /etc/apache2/sites-available/gtta-ssl.conf
 a2ensite gtta*
-a2dissite default
+a2dissite 000-default
 a2enmod ssl rewrite
-
-# php configuration
-EXT_DIR=`php -r 'echo ini_get("extension_dir");'`
-mv $SRC_DIR/ioncube.so $EXT_DIR/
-echo "zend_extension = $EXT_DIR/ioncube.so" >> /etc/php5/conf.d/ioncube.ini
 
 # increase PHP limits
 sed -i 's/memory_limit = .*/memory_limit = 1024M/' /etc/php5/apache2/php.ini
@@ -89,7 +80,7 @@ sudo -upostgres psql -c "create database gtta encoding 'utf-8'"
 sudo -upostgres psql -c "create user gtta with password 'cqxLvzTW96BbiYoPjiyMbiQpG'"
 sudo -upostgres psql -c "grant all on database gtta to gtta"
 sudo -upostgres psql gtta < $VERSION_DIR/web/protected/data/schema.sql
-sed -i 's/^local\s\+all\s\+all\s\+ident/local all all password/g' /etc/postgresql/8.4/main/pg_hba.conf
+sed -i 's/^local\s\+all\s\+all\s\+peer/local all all password/g' /etc/postgresql/9.1/main/pg_hba.conf
 service postgresql restart
 cd $VERSION_DIR/web/protected
 python $VERSION_DIR/tools/make_config.py $ROOT_DIR/config/gtta.ini $VERSION_DIR/web/protected/config
@@ -99,7 +90,6 @@ python $VERSION_DIR/tools/make_config.py $ROOT_DIR/config/gtta.ini $VERSION_DIR/
 sudo -upostgres psql gtta -c "INSERT INTO languages(name,code,\"default\") values('English','en','t'),('Deutsch','de','f');"
 sudo -upostgres psql gtta -c "UPDATE languages SET user_default = 't' WHERE id = 1;"
 sudo -upostgres psql gtta -c "INSERT INTO system(timezone, version, version_description) VALUES('Europe/Zurich', '$VERSION', 'Initial version.');"
-sudo -upostgres psql gtta -c "INSERT INTO gt_dependency_processors(name) VALUES('nmap-port');"
 
 # generate temporary SSL certificate
 openssl genrsa -out $SSL_DIR/server.key 2048

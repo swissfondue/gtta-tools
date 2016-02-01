@@ -13,16 +13,16 @@ export LC_ALL="en_US.UTF-8"
 # apt-get variables
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 export DEBIAN_FRONTEND=noninteractive
-echo "deb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list
+echo "deb http://download.openvz.org/debian wheezy main" >> /etc/apt/sources.list
 
 # install packages
 apt-get -y update
 apt-get -y upgrade
 apt-get -y purge exim4 exim4-daemon-light exim4-base exim4-config
-apt-get -y install linux-image-openvz-`uname -r | cut -d "-" -f 3` vzctl vzquota
+apt-get -y --force-yes install linux-image-openvz-amd64 vzctl vzquota ploop vzstats
 apt-get -y install apache2 postgresql make libyaml-dev ntp redis-server supervisor
-apt-get -y install libapache2-mod-php5 php5-pgsql php5-curl php5-gd php5-suhosin php-pear php5-dev php5-mcrypt
-apt-get -y install python python-psycopg2 python-dev python-pip git=1:1.7.10.4-1~bpo60+1
+apt-get -y install libapache2-mod-php5 php5-pgsql php5-curl php5-gd php-pear php5-dev php5-mcrypt
+apt-get -y install python python-psycopg2 python-dev python-pip git
 
 # php extensions
 printf "\n" | pecl install yaml
@@ -45,4 +45,9 @@ echo -e "#!/bin/sh\niptables-restore < /etc/iptables.rules" >> /etc/network/if-p
 chmod 0755 /etc/network/if-pre-up.d/iptables
 
 # debian image
-wget -q -O /var/lib/vz/template/cache/debian-7.0-i386-minimal.tar.gz http://download.openvz.org/template/precreated/debian-7.0-x86-minimal.tar.gz
+wget -q -O /var/lib/vz/template/cache/debian-8.0-x86_64-minimal.tar.gz http://download.openvz.org/template/precreated/debian-8.0-x86_64-minimal.tar.gz
+
+# grub setup
+sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
+sed -i 's/GRUB_DEFAULT=0/GRUB_DEFAULT=2/g' /etc/default/grub
+update-grub

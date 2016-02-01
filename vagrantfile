@@ -13,17 +13,29 @@ if !Vagrant.has_plugin?("vagrant-reload") or !Vagrant.has_plugin?("vagrant-vbgue
     abort
 end
 
+if (ARGV[0] == "up" or ARGV[0] == "provision") and
+    (not ENV.has_key?("GTTA_WEB_PATH") or
+    not ENV.has_key?("GTTA_SCRIPTS_PATH") or
+    not ENV.has_key?("GTTA_TOOLS_PATH") or
+    not ENV.has_key?("GTTA_COMMUNITY_PATH") or
+    not ENV.has_key?("GTTA_LUST_PATH") or
+    not ENV.has_key?("GTTA_IP"))
+    puts "Please define the following environment variables:"
+    puts " - GTTA_WEB_PATH"
+    puts " - GTTA_SCRIPTS_PATH"
+    puts " - GTTA_TOOLS_PATH"
+    puts " - GTTA_COMMUNITY_PATH"
+    puts " - GTTA_LUST_PATH"
+    puts " - GTTA_IP\n\n"
+    abort
+end
+
 if ARGV[0] == "up"
-    printf "GTTA Web Root: "
-    web_root = $stdin.gets.chomp
-    printf "GTTA Scripts Dir: "
-    scripts_dir = $stdin.gets.chomp
-    printf "GTTA Community: "
-    community = $stdin.gets.chomp
-    printf "GTTA Lust: "
-    lust = $stdin.gets.chomp
-    printf "GTTA IP Address: "
-    ip = $stdin.gets.chomp
+    web_root = ENV["GTTA_WEB_PATH"]
+    scripts_dir = ENV["GTTA_SCRIPTS_PATH"]
+    community = ENV["GTTA_COMMUNITY_PATH"]
+    lust = ENV["GTTA_LUST_PATH"]
+    ip = ENV["GTTA_IP"]
 
     puts "\nPlease execute the following command before 'vagrant up' to bypass VirtualBox DHCP bug:"
     puts "> VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0"
@@ -33,23 +45,32 @@ if ARGV[0] == "up"
 end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-    config.vm.box = "dene/debian-squeeze"
+    config.vm.box = "debian/wheezy64"
     config.vm.box_check_update = false
     config.vm.hostname = "gtta"
-    config.vm.network "private_network", ip: ip
-    config.vm.synced_folder web_root, "/gtta_web"
-    config.vm.synced_folder scripts_dir, "/gtta_scripts"
-    config.vm.synced_folder community, "/community"
-    config.vm.synced_folder lust, "/lust"
-    config.vm.post_up_message = "GTTA development environment is up!"
 
-    config.vm.provider "virtualbox" do |vb|
-        vb.gui = true
-        vb.name = "GTTA"
-        vb.customize ["modifyvm", :id, "--memory", "1024"]
+    if ARGV[0] == "up"
+        config.vm.network "private_network", ip: ip
+        config.vm.post_up_message = "GTTA development environment is up!"
+
+        config.vm.provider "virtualbox" do |vb|
+            vb.gui = true
+            vb.name = "GTTA"
+            vb.customize ["modifyvm", :id, "--memory", "1024"]
+        end
     end
 
-    config.vm.provision "shell", path: "builder/scripts/vagrant/pre-reboot.sh"
-    config.vm.provision "reload"
-    config.vm.provision "shell", path: "builder/scripts/vagrant/post-reboot.sh"
+    if ARGV[0] == "up" or ARGV[0] == "provision"
+        config.vm.provision "shell", inline: "sudo mkdir /gtta"
+        config.vm.provision "shell", inline: "sudo chmod -R 0777 /gtta"
+
+        config.vm.provision "file", source: ENV["GTTA_WEB_PATH"], destination: "/gtta"
+        config.vm.provision "file", source: ENV["GTTA_SCRIPTS_PATH"], destination: "/gtta"
+        config.vm.provision "file", source: ENV["GTTA_TOOLS_PATH"], destination: "/gtta"
+        config.vm.provision "file", source: ENV["GTTA_COMMUNITY_PATH"], destination: "/gtta"
+        config.vm.provision "file", source: ENV["GTTA_LUST_PATH"], destination: "/gtta"
+        config.vm.provision "shell", path: "builder/scripts/vagrant/pre-reboot.sh"
+        config.vm.provision "reload"
+        config.vm.provision "shell", path: "builder/scripts/vagrant/post-reboot.sh"
+    end
 end

@@ -4,6 +4,7 @@
 	SSLEngine On
 	SSLCertificateFile /opt/gtta/security/ssl/server.crt
 	SSLCertificateKeyFile /opt/gtta/security/ssl/server.key
+	SSLCACertificateFile /opt/gtta/security/ca/ca.crt
 	SSLVerifyClient none
 
 	DocumentRoot /opt/gtta/current/web
@@ -14,7 +15,6 @@
 	</Directory>
 
 	<Location /verify>
-		SSLCACertificateFile /opt/gtta/security/ca/ca.crt
 		SSLVerifyClient optional
 		SSLVerifyDepth 10
 		SSLOptions +StdEnvVars
