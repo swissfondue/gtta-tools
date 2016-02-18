@@ -6,6 +6,7 @@ FIRST_TIME_TASKS = (
     "network",
     "domain",
     "user",
+    "passwords",
     "data",
     "info",
     "logo"
@@ -18,6 +19,7 @@ TASKS = (
     "network",
     "domain",
     "user",
+    "passwords",
     "data",
     "login",
     "reboot",
@@ -57,18 +59,21 @@ This script will help you to set up your GTTA virtual machine. Please choose a
 section below to configure.
 -------------------------------------------------------------------------------"""
 
-TYPE_VM = "vm"
-TYPE_DISTR = "amazon"
+TYPE_VMWARE = "vmware"
+TYPE_AMAZON = "amazon"
+TYPE_VIRTUALBOX = "virtualbox"
+TYPE_DEDICATED = "dedicated"
+TYPE_HOSTED = (TYPE_AMAZON, TYPE_DEDICATED)
 
-_type = TYPE_VM
+_type = TYPE_VMWARE
 
 if path.exists("/opt/gtta/config/type"):
     try:
         _type = open("/opt/gtta/config/type", "rt").read().strip()
     except:
-        _type = TYPE_VM
+        _type = TYPE_VMWARE
 
 if not _type:
-    _type = TYPE_VM
+    _type = TYPE_VMWARE
 
 SYSTEM_TYPE = _type

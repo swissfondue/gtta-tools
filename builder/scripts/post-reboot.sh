@@ -2,16 +2,16 @@
 
 set -e
 
-if [ -z $1 ] || [ -z $2 ] || [ -z $3 ]
+if [ -z $1 ] || [ -z $2 ]
 then
-    echo "Usage: build-distr.sh <version> <root password> <user password>"
+    echo "Usage: post-reboot.sh <type> <version>"
     exit 1
 fi
 
 # constants and variables
-VERSION=$1
-ROOT_PW=$2
-USER_PW=$3
+TYPE=$1
+VERSION=$2
+
 SRC_DIR=/tmp/files
 ROOT_DIR=/opt/gtta
 FILES_DIR=$ROOT_DIR/files
@@ -84,12 +84,13 @@ sed -i 's/^local\s\+all\s\+all\s\+peer/local all all password/g' /etc/postgresql
 service postgresql restart
 cd $VERSION_DIR/web/protected
 python $VERSION_DIR/tools/make_config.py $ROOT_DIR/config/gtta.ini $VERSION_DIR/web/protected/config
+chmod 0755 yiic
 ./yiic migrate --interactive=0
 
 # database initialization
 sudo -upostgres psql gtta -c "INSERT INTO languages(name,code,\"default\") values('English','en','t'),('Deutsch','de','f');"
-sudo -upostgres psql gtta -c "UPDATE languages SET user_default = 't' WHERE id = 1;"
 sudo -upostgres psql gtta -c "INSERT INTO system(timezone, version, version_description) VALUES('Europe/Zurich', '$VERSION', 'Initial version.');"
+sudo -upostgres psql gtta -c "UPDATE languages SET user_default = 't' WHERE id = 1;"
 
 # generate temporary SSL certificate
 openssl genrsa -out $SSL_DIR/server.key 2048
@@ -135,7 +136,17 @@ cd $VERSION_DIR/web/protected
 # crontab setup
 cp $SRC_DIR/crontab.txt /etc/cron.d/gtta
 
+# passwords
+ROOT_PW=`openssl rand -base64 32 | sha256sum | head -c 25`
+USER_PW=`openssl rand -base64 32 | sha256sum | head -c 25`
+
+echo "root:$ROOT_PW" | chpasswd
+echo "gtta:$USER_PW" | chpasswd
+
 # supervisor setup
 cp $SRC_DIR/resque-*.conf /etc/supervisor/conf.d
 service supervisor stop
 service supervisor start
+
+# save build type
+echo "$TYPE" > $ROOT_DIR/config/type

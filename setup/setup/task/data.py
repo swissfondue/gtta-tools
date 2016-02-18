@@ -18,7 +18,7 @@ class Data(Task):
         self._install_data()
 
     def _install_data(self):
-        """Show logo"""
+        """Data installation"""
         if self.automatic:
             print "\n"
 

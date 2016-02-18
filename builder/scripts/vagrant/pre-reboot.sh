@@ -2,13 +2,17 @@
 
 set -e
 
-# apt-get variables
-export PATH="/usr/bin:/bin:/usr/sbin:/sbin"
-export DEBIAN_FRONTEND="noninteractive"
+# locale setup
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+locale-gen
+update-locale LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8
+export LANG="en_US.UTF-8"
+export LANGUAGE="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 
-# change sources list
-sed -i 's/^\(deb http:\/\/security\)/#\1/g' /etc/apt/sources.list
-sed -i 's/^\(deb-src http:\/\/security\)/#\1/g' /etc/apt/sources.list
+# apt-get variables
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+export DEBIAN_FRONTEND=noninteractive
 echo "deb http://download.openvz.org/debian wheezy main" >> /etc/apt/sources.list
 
 # install packages
@@ -17,7 +21,7 @@ apt-get -y upgrade
 apt-get -y purge exim4 exim4-daemon-light exim4-base exim4-config
 apt-get -y --force-yes install linux-image-openvz-amd64 linux-headers-2.6.32-openvz-amd64 vzctl vzquota ploop vzstats
 apt-get -y install apache2 postgresql make libyaml-dev ntp redis-server supervisor
-apt-get -y install libapache2-mod-php5 php5-pgsql php5-curl php5-gd php-pear php5-dev
+apt-get -y install libapache2-mod-php5 php5-pgsql php5-curl php5-gd php-pear php5-dev php5-mcrypt
 apt-get -y install python python-psycopg2 python-dev python-pip git
 
 # php extensions

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
-from os import mkdir, path, chdir, getcwd
+from os import mkdir, path, chdir, getcwd, env
 from subprocess import check_call, CalledProcessError
 from sys import argv, exit
+import build_vars
 
 CLEAN_LIST = (
     ".hg*",
@@ -39,25 +40,15 @@ def cleanup():
             pass
 
 
-def build_vm():
-    """Build VM"""
-    print "VM Builder"
-    print "----------"
-
-    try:
-        check_call(["packer", "build", "packer/vm.json"])
-    except CalledProcessError:
-        raise CommandFailed
-
-
-def build_distr(version, root_password, user_password):
-    """Build distr"""
-    print "Distributive Builder"
+def build_vmware(version):
+    """Build VMware"""
+    print "GTTA Builder"
     print "--------------------"
-    print "Building version %s" % version
+    print "Building VMWare version %s" % version
 
-    source_web = "../../web"
-    source_tools = "../../tools"
+    source_web = build_vars.GTTA_WEB_PATH
+    source_tools = build_vars.GTTA_TOOLS_PATH
+    output = build_vars.GTTA_OUTPUT
     destination = "/tmp/gtta"
     web_zip = "files/web.tgz"
     tools_zip = "files/tools.tgz"
@@ -92,22 +83,12 @@ def build_distr(version, root_password, user_password):
         check_call([
             "packer",
             "build",
-            "-var",
-            "version=%s" % version,
-            "-var",
-            "root_password=%s" % root_password,
-            "-var",
-            "user_password=%s" % user_password,
+            "-var", "output_directory=%s" % output,
+            "-var", "version=%s" % version,
             "packer/distr.json"
         ])
     except CalledProcessError:
         raise CommandFailed
-
-
-def build_all(version, root_password, user_password):
-    """Build all"""
-    build_vm()
-    build_distr(version, root_password, user_password)
 
 
 def build_update(version, key_password):
@@ -116,13 +97,13 @@ def build_update(version, key_password):
     print "--------------"
     print "Building version %s" % version
 
-    source_web = "../../web"
-    source_tools = "../../tools"
+    source_web = build_vars.GTTA_WEB_PATH
+    source_tools = build_vars.GTTA_TOOLS_PATH
     destination = "/tmp/gtta"
     zip_path = "/tmp/gtta.zip"
     sig_path = "/tmp/gtta.sig"
-    key_path = "../../../security/keys/update-server.priv"
-    output = "../../../builds/%s" % version
+    key_path = build_vars.GTTA_UPDATE_KEY_PATH
+    output = build_vars.GTTA_OUTPUT
 
     mkdir(destination)
 
@@ -151,24 +132,6 @@ def build_update(version, key_password):
         # remove temporary files
         for entry in CLEAN_LIST:
             check_call("find %s -iname %s | xargs rm -rf" % (destination, entry), shell=True)
-
-        # encode PHP files
-        print "* Encoding files"
-
-        check_call([
-            "ioncube53",
-            "%s/web" % destination,
-            "-o",
-            "%s/web-encoded" % destination,
-            "--copy",
-            "migrations/template.php",
-            "--copy",
-            "config/params.template.php",
-            "--without-loader-check"
-        ])
-
-        check_call("rm -r %s/web" % destination, shell=True)
-        check_call("mv %s/web-encoded %s/web" % (destination, destination), shell=True)
 
         # compress
         print "* Compressing"
@@ -206,15 +169,11 @@ def show_help(command=None):
         None: """Usage: build.py <command> <params>
 
 Available commands:
-    vm     - build base virtual machine
-    distr  - build distributive based on the virtual machine
-    all    - build both vm and distributive
+    vmware - build distributive based on VMWare virtual machine
     update - build update
     help   - shows this help""",
 
-        "vm": "Usage: build.py vm",
-        "distr": "Usage: build.py distr <version> <root password> <user password>",
-        "all": "Usage: build.py all <version> <root password> <user password>",
+        "vmware": "Usage: build.py vmware <version>",
         "update": "Usage: build.py update <version> <key password>",
         "help": "Usage: build.py help <command>",
     }
@@ -232,9 +191,7 @@ def main():
         exit(1)
 
     handlers = {
-        "vm": build_vm,
-        "distr": build_distr,
-        "all": build_all,
+        "vmware": build_vmware,
         "update": build_update,
         "help": show_help
     }

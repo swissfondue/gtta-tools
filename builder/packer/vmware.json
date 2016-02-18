@@ -1,9 +1,11 @@
 {
     "variables": {
-        "iso": null
+        "iso": null,
+        "output_directory": null,
+        "version": null
     },
     "builders": [{
-        "name": "gtta-base",
+        "name": "gtta-{{user `version`}}",
         "type": "vmware-iso",
         "boot_command": [
             "<esc><wait>",
@@ -24,7 +26,7 @@
         "headless": true,
         "boot_wait": "10s",
         "disk_size": 20480,
-        "guest_os_type": "debian6",
+        "guest_os_type": "debian7",
         "http_directory": "files",
         "iso_checksum_type": "none",
         "iso_url": "file://{{user `iso`}}",
@@ -36,17 +38,30 @@
         "vm_name": "gtta",
         "vmdk_name": "gtta",
         "skip_compaction": true,
-        "output_directory": "/Volumes/MUSIC/VMs/gtta-base",
+        "output_directory": "{{user `output_directory`}}/gtta-{{user `version`}}",
         "shutdown_command": "shutdown -h now",
         "vmx_data": {
+            "displayname": "gtta",
             "memsize": "1024",
             "numvcpus": "1",
             "cpuid.coresPerSocket": "1"
         }
     }],
     "post-processors": [],
-    "provisioners": [{
-        "type": "shell",
-        "script": "scripts/build-vm.sh"
-    }]
+    "provisioners": [
+        {
+            "type": "shell",
+            "script": "scripts/pre-reboot.sh"
+        },
+        {
+            "type": "file",
+            "source": "files",
+            "destination": "/tmp"
+        },
+        {
+            "type": "shell",
+            "script": "scripts/post-reboot.sh",
+            "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} {{ .Path }} vmware {{user `version`}}"
+        }
+    ]
 }

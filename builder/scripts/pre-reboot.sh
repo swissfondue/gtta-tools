@@ -19,7 +19,7 @@ echo "deb http://download.openvz.org/debian wheezy main" >> /etc/apt/sources.lis
 apt-get -y update
 apt-get -y upgrade
 apt-get -y purge exim4 exim4-daemon-light exim4-base exim4-config
-apt-get -y --force-yes install linux-image-openvz-amd64 vzctl vzquota ploop vzstats
+apt-get -y --force-yes install linux-image-openvz-amd64 linux-headers-2.6.32-openvz-amd64 vzctl vzquota ploop vzstats
 apt-get -y install apache2 postgresql make libyaml-dev ntp redis-server supervisor
 apt-get -y install libapache2-mod-php5 php5-pgsql php5-curl php5-gd php-pear php5-dev php5-mcrypt
 apt-get -y install python python-psycopg2 python-dev python-pip git
@@ -51,3 +51,6 @@ wget -q -O /var/lib/vz/template/cache/debian-8.0-x86_64-minimal.tar.gz http://do
 sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
 sed -i 's/GRUB_DEFAULT=0/GRUB_DEFAULT=2/g' /etc/default/grub
 update-grub
+
+reboot
+sleep 60
