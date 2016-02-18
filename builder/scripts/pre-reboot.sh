@@ -15,6 +15,11 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 export DEBIAN_FRONTEND=noninteractive
 echo "deb http://download.openvz.org/debian wheezy main" >> /etc/apt/sources.list
 
+# get OpenVZ key
+wget http://ftp.openvz.org/debian/archive.key
+apt-key add archive.key
+rm archive.key
+
 # install packages
 apt-get -y update
 apt-get -y upgrade
