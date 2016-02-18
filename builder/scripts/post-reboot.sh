@@ -107,10 +107,6 @@ chown -R gtta:gtta $CA_DIR
 # restart apache to apply all settings
 service apache2 restart
 
-# user passwords setup
-echo "root:$ROOT_PW" | chpasswd
-echo "gtta:$USER_PW" | chpasswd
-
 # add www-data user to gtta group
 usermod -a -G gtta www-data
 
