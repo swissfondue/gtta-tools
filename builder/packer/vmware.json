@@ -26,7 +26,7 @@
         "headless": true,
         "boot_wait": "10s",
         "disk_size": 20480,
-        "guest_os_type": "debian7",
+        "guest_os_type": "debian6",
         "http_directory": "files",
         "iso_checksum_type": "none",
         "iso_url": "file://{{user `source_iso`}}",
