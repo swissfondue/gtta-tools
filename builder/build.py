@@ -58,7 +58,7 @@ def build_vmware(version):
     try:
         print "* Copying files"
 
-        check_call("cp -r %s %s" % (source_web, destination), shell=True)
+        check_call("cp -r %s %s/web" % (source_web, destination), shell=True)
 
         mkdir("%s/tools" % destination)
         check_call("cp %s/make_config.py %s/tools" % (source_tools, destination), shell=True)
@@ -110,7 +110,7 @@ def build_update(version, key_password):
     try:
         print "* Copying files"
 
-        check_call("cp -r %s %s" % (source_web, destination), shell=True)
+        check_call("cp -r %s %s/web" % (source_web, destination), shell=True)
         check_call("cp files/crontab.txt %s" % destination, shell=True)
 
         # tools
