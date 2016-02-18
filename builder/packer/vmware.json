@@ -1,6 +1,6 @@
 {
     "variables": {
-        "iso": null,
+        "source_iso": null,
         "output_directory": null,
         "version": null
     },
@@ -29,7 +29,7 @@
         "guest_os_type": "debian7",
         "http_directory": "files",
         "iso_checksum_type": "none",
-        "iso_url": "file://{{user `iso`}}",
+        "iso_url": "file://{{user `source_iso`}}",
         "ssh_username": "root",
         "ssh_password": "gtta",
         "ssh_port": 22,

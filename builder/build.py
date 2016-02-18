@@ -83,9 +83,10 @@ def build_vmware(version):
         check_call([
             "packer",
             "build",
+            "-var", "source_iso=%s" % build_vars.GTTA_ISO,
             "-var", "output_directory=%s" % output,
             "-var", "version=%s" % version,
-            "packer/distr.json"
+            "packer/vmware.json"
         ])
     except CalledProcessError:
         raise CommandFailed

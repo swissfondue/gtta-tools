@@ -1,5 +1,6 @@
 # coding:utf8
 
+GTTA_ISO="/path/to/iso"
 GTTA_WEB_PATH="/path/to/web"
 GTTA_TOOLS_PATH="/path/to/tools"
 GTTA_UPDATE_KEY_PATH="/path/to/update.key"
