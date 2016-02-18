@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from os import mkdir, path, chdir, getcwd, env
+from os import mkdir, path, chdir, getcwd
 from subprocess import check_call, CalledProcessError
 from sys import argv, exit
 import build_vars
