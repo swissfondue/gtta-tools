@@ -265,6 +265,8 @@ class Network(Task):
             print "FAILED (%s)\x07" % str(e)
             return
 
+        self._update_openvz()
+
         self._network_test()
         self.changed = True
 
@@ -312,19 +314,25 @@ class Network(Task):
             self.print_manual_only_text("FAILED (%s)\x07" % str(e))
             return
 
+        self._update_openvz()
+
         self._network_test()
         self.changed = True
 
     def _update_openvz(self):
         """Update OpenVZ network configuration"""
-        _, _, _, ns = self.read_defaults()
+        try:
+            _, _, _, ns = self.read_defaults()
 
-        vz_status = Popen(["vzctl status 666"], shell=True, stdout=PIPE, stderr=PIPE).communicate()[0]
+            vz_status = Popen(["vzctl status 666"], shell=True, stdout=PIPE, stderr=PIPE).communicate()[0]
 
-        if not match(r".*mounted running$", vz_status):
-            return
+            if not match(r".*mounted running$", vz_status):
+                return
 
-        Popen(["vzctl set 666 --nameserver %s --save" % ns], shell=True, stdout=PIPE, stderr=PIPE)
+            Popen(["vzctl set 666 --nameserver %s --save" % ns], shell=True, stdout=PIPE, stderr=PIPE)
+
+        except Exception as e:
+            self.print_manual_only_text("OpenVZ update failed: %s\x07" % str(e))
 
     def _network_tools(self):
         """Network tools"""
