@@ -315,6 +315,17 @@ class Network(Task):
         self._network_test()
         self.changed = True
 
+    def _update_openvz(self):
+        """Update OpenVZ network configuration"""
+        _, _, _, ns = self.read_defaults()
+
+        vz_status = Popen(["vzctl status 666"], shell=True, stdout=PIPE, stderr=PIPE).communicate()[0]
+
+        if not match(r".*mounted running$", vz_status):
+            return
+
+        Popen(["vzctl set 666 --nameserver %s --save" % ns], shell=True, stdout=PIPE, stderr=PIPE)
+
     def _network_tools(self):
         """Network tools"""
         tools = {
