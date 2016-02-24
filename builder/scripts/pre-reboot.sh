@@ -45,7 +45,7 @@ echo "net.ipv4.conf.all.send_redirects = 0" >> /etc/sysctl.conf
 
 # iptables setup for OpenVZ container
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-iptables-save > /etc/iptables.rules
+echo -e "*nat\n-A POSTROUTING -o eth0 -j MASQUERADE\nCOMMIT\n" > /etc/iptables.rules
 echo -e "#!/bin/sh\niptables-restore < /etc/iptables.rules" >> /etc/network/if-pre-up.d/iptables
 chmod 0755 /etc/network/if-pre-up.d/iptables
 
