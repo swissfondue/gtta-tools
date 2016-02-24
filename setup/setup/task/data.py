@@ -22,7 +22,7 @@ class Data(Task):
         if self.automatic:
             print "\n"
 
-        self.print_manual_only_text("The installation process may take a while, please be patient...")
+        print "The installation process may take a few minutes, please be patient..."
 
         try:
             Popen(
@@ -34,9 +34,7 @@ class Data(Task):
             self.print_manual_only_text("Well done!\n")
 
         except:
-            self.print_manual_only_text("Installation has failed.")
-            self.print_manual_only_text(
-                "Please repeat the installation later or install checks & scripts from GTTA Community manually.\n"
-            )
+            print "Installation has failed."
+            print "Please repeat the installation later or install checks & scripts from GTTA Community manually.\n"
 
         self.changed = True
