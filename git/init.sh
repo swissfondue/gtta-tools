@@ -17,6 +17,8 @@ fi;
 
 # Git command with dirs
 GIT_CMD="git --git-dir $1/.git --work-tree $1"
+HOMEDIR=$(getent passwd `whoami` | cut -d: -f6)
+export HOME=$HOMEDIR
 
 # Initing
 $GIT_CMD init -q

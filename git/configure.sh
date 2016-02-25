@@ -37,6 +37,8 @@ done
 
 # Git command with dirs
 GIT_CMD="git --git-dir $DIR/.git --work-tree $DIR"
+HOMEDIR=$(getent passwd `whoami` | cut -d: -f6)
+export HOME=$HOMEDIR
 
 # Validate
 if [ -z $DIR ] || [ -z $REPO_URL ] || [ -z $EMAIL ];
@@ -48,13 +50,11 @@ fi;
 echo $REPO_URL > /tmp/git_url.txt
 
 $GIT_CMD remote set-url origin $REPO_URL
-
 $GIT_CMD config --global user.name `whoami`
 $GIT_CMD config --global user.email $EMAIL
 
 if [ ! -z $KEY_PATH ] && [ -e $KEY_PATH ];
 then
-    HOMEDIR=$(getent passwd `whoami` | cut -d: -f6)
     mkdir -p $HOMEDIR/.ssh
     cp $KEY_PATH $HOMEDIR/.ssh/
     chmod 600 $HOMEDIR/.ssh/$(basename $KEY_PATH)

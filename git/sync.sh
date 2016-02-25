@@ -48,6 +48,7 @@ then
 fi;
 
 HOMEDIR=$(getent passwd `whoami` | cut -d: -f6)
+export HOME=$HOMEDIR
 
 if [ ! -z $KEY_FILENAME ] && [ -e $HOMEDIR/.ssh/$KEY_FILENAME ];
 then
