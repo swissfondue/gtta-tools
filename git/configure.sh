@@ -47,8 +47,6 @@ then
 	exit 1;
 fi;
 
-echo $REPO_URL > /tmp/git_url.txt
-
 $GIT_CMD remote set-url origin $REPO_URL
 $GIT_CMD config --global user.name `whoami`
 $GIT_CMD config --global user.email $EMAIL

@@ -77,9 +77,18 @@ else
     $GIT_CMD commit -m "$MESSAGE"
     $GIT_CMD fetch --all
     $GIT_CMD branch old-master
-    $GIT_CMD reset --hard origin/master
 
-    $GIT_CMD merge old-master -X $STRATEGY
+    # check if we have origin/master branch available
+    ORIGIN_MASTER=`$GIT_CMD branch --all | grep origin/master` || true
+    BRANCH_TO_RESET=origin/master
+
+    if [ -z $ORIGIN_MASTER ]
+    then
+        BRANCH_TO_RESET=master
+    fi
+
+    $GIT_CMD reset --hard $BRANCH_TO_RESET
+    $GIT_CMD merge old-master -X $STRATEGY -m "Merged using '$STRATEGY' strategy"
     $GIT_CMD branch -D old-master
     $GIT_CMD push -u origin master
 fi;
