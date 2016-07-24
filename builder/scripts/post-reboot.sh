@@ -82,15 +82,17 @@ sudo -upostgres psql -c "grant all on database gtta to gtta"
 sudo -upostgres psql gtta < $VERSION_DIR/web/protected/data/schema.sql
 sed -i 's/^local\s\+all\s\+all\s\+peer/local all all password/g' /etc/postgresql/9.1/main/pg_hba.conf
 service postgresql restart
-cd $VERSION_DIR/web/protected
-python $VERSION_DIR/tools/make_config.py $ROOT_DIR/config/gtta.ini $VERSION_DIR/web/protected/config
-chmod 0755 yiic
-./yiic migrate --interactive=0
 
 # database initialization
 sudo -upostgres psql gtta -c "INSERT INTO languages(name,code,\"default\") values('English','en','t'),('Deutsch','de','f');"
 sudo -upostgres psql gtta -c "INSERT INTO system(timezone, version, version_description) VALUES('Europe/Zurich', '$VERSION', 'Initial version.');"
 sudo -upostgres psql gtta -c "UPDATE languages SET user_default = 't' WHERE id = 1;"
+
+# migrations
+cd $VERSION_DIR/web/protected
+python $VERSION_DIR/tools/make_config.py $ROOT_DIR/config/gtta.ini $VERSION_DIR/web/protected/config
+chmod 0755 yiic
+./yiic migrate --interactive=0
 
 # generate temporary SSL certificate
 openssl genrsa -out $SSL_DIR/server.key 2048
