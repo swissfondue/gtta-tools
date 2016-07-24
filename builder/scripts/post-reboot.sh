@@ -85,14 +85,14 @@ service postgresql restart
 
 # database initialization
 sudo -upostgres psql gtta -c "INSERT INTO languages(name,code,\"default\") values('English','en','t'),('Deutsch','de','f');"
-sudo -upostgres psql gtta -c "INSERT INTO system(timezone, version, version_description) VALUES('Europe/Zurich', '$VERSION', 'Initial version.');"
-sudo -upostgres psql gtta -c "UPDATE languages SET user_default = 't' WHERE id = 1;"
 
 # migrations
 cd $VERSION_DIR/web/protected
 python $VERSION_DIR/tools/make_config.py $ROOT_DIR/config/gtta.ini $VERSION_DIR/web/protected/config
 chmod 0755 yiic
 ./yiic migrate --interactive=0
+sudo -upostgres psql gtta -c "INSERT INTO system(timezone, version, version_description) VALUES('Europe/Zurich', '$VERSION', 'Initial version.');"
+sudo -upostgres psql gtta -c "UPDATE languages SET user_default = 't' WHERE id = 1;"
 
 # generate temporary SSL certificate
 openssl genrsa -out $SSL_DIR/server.key 2048
