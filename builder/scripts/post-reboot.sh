@@ -127,10 +127,6 @@ echo "gtta    ALL=GTTA, NOPASSWD:GTTA" >> /etc/sudoers
 sed -i 's/^\([2-6].*\)$/#\1/g' /etc/inittab
 sed -i 's/^1.*$/1:2345:respawn:\/usr\/bin\/python \/opt\/gtta\/current\/tools\/setup\/setup.py/g' /etc/inittab
 
-# generate OpenVZ container
-cd $VERSION_DIR/web/protected
-./yiic regenerate 1
-
 # crontab setup
 cp $SRC_DIR/crontab.txt /etc/cron.d/gtta
 
