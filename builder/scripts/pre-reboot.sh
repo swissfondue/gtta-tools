@@ -16,7 +16,7 @@ export DEBIAN_FRONTEND=noninteractive
 echo "deb http://download.openvz.org/debian wheezy main" >> /etc/apt/sources.list
 
 # get OpenVZ key
-wget http://ftp.openvz.org/debian/archive.key
+wget https://download.openvz.org/debian/archive.key
 apt-key add archive.key
 rm archive.key
 

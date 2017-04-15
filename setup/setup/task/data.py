@@ -26,6 +26,12 @@ class Data(Task):
 
         try:
             Popen(
+                ["/usr/bin/php", "/opt/gtta/current/web/protected/yiic", "regenerate", "1"],
+                stdout=PIPE,
+                stderr=PIPE
+            ).communicate()
+
+            Popen(
                 ["/usr/bin/php", "/opt/gtta/current/web/protected/yiic", "initialdata"],
                 stdout=PIPE,
                 stderr=PIPE
