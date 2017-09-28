@@ -18,6 +18,7 @@ git clean -f
 git pull && git checkout v$1
 
 cd builder
+export PYTHONPATH="/opt/build/gtta"
 python build.py update --version $1
 
 cd ~/lucy/output

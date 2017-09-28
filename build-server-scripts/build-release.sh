@@ -18,6 +18,8 @@ cd ../gtta-tools
 git clean -f
 git pull && git checkout v$1
 cd builder
+
+export PYTHONPATH="/opt/build/gtta"
 python build.py vmware $1
 
 cd ~/gtta/output
