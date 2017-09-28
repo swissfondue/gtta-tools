@@ -30,7 +30,7 @@ apt-get -y install libapache2-mod-php5 php5-pgsql php5-curl php5-gd php-pear php
 apt-get -y install python python-psycopg2 python-dev python-pip git
 
 # php extensions
-printf "\n" | pecl install yaml
+printf "\n" | pecl install yaml-1.3.1
 echo "extension=yaml.so" > /etc/php5/apache2/conf.d/yaml.ini
 
 # kernel settings for OpenVZ
