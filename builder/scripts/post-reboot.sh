@@ -74,6 +74,7 @@ chown -R gtta:gtta $ROOT_DIR
 
 # create a link
 ln -s $VERSION_DIR $ROOT_DIR/current
+chmod -R 0777 $ROOT_DIR/current/web/assets
 
 # database setup
 sudo -upostgres psql -c "create database gtta encoding 'utf-8'"

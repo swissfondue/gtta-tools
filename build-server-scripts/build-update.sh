@@ -24,4 +24,4 @@ export PYTHONPATH="/opt/build/gtta"
 python build.py update $1 $2
 
 cd ~/gtta/output
-scp -r updates/$1 update.phishing-server.com:/opt/lust/repository/ps/
+scp -r updates/$1 update.phishing-server.com:/opt/lust/repository/gtta/
