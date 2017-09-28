@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from os import mkdir, path, chdir, getcwd
+from os import mkdir, path, chdir, getcwd, makedirs
 from subprocess import check_call, CalledProcessError
 from sys import argv, exit
 import build_vars
@@ -104,7 +104,7 @@ def build_update(version, key_password):
     zip_path = "/tmp/gtta.zip"
     sig_path = "/tmp/gtta.sig"
     key_path = build_vars.GTTA_UPDATE_KEY_PATH
-    output = build_vars.GTTA_OUTPUT
+    output = "%s/updates/%s" % (build_vars.GTTA_OUTPUT, version)
 
     mkdir(destination)
 
@@ -156,7 +156,7 @@ def build_update(version, key_password):
         if path.exists(output):
             check_call("rm -r %s" % output, shell=True)
 
-        mkdir(output)
+        makedirs(output)
         check_call("mv %s %s" % (zip_path, output), shell=True)
         check_call("mv %s %s" % (sig_path, output), shell=True)
 

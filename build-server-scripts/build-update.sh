@@ -2,7 +2,7 @@
 
 set -e
 
-if [ -z $1 ]
+if [ -z $1 || -z $2 ]
 then
     echo "Missing required parameter"
     exit
@@ -21,7 +21,7 @@ git pull origin master && git checkout v$1
 
 cd builder
 export PYTHONPATH="/opt/build/gtta"
-python build.py update --version $1
+python build.py update $1 $2
 
 cd ~/lucy/output
 scp -r updates/$1 update.phishing-server.com:/opt/lust/repository/ps/
