@@ -13,10 +13,12 @@ rm -f ~/gtta/output/vmware.zip
 
 cd ~/gtta/gtta-web
 git clean -f
-git pull && git checkout v$1
+git checkout master
+git pull origin master && git checkout v$1
 cd ../gtta-tools
 git clean -f
-git pull && git checkout v$1
+git checkout master
+git pull origin master && git checkout v$1
 cd builder
 
 export PYTHONPATH="/opt/build/gtta"
