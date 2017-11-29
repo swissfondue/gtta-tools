@@ -13,10 +13,14 @@ rm -f ~/gtta/output/vmware.zip
 
 cd ~/gtta/gtta-web
 git clean -f
+git tag --delete v$1 || true
+git fetch
 git checkout master
 git pull origin master && git checkout v$1
 cd ../gtta-tools
 git clean -f
+git tag --delete v$1 || true
+git fetch
 git checkout master
 git pull origin master && git checkout v$1
 cd builder
