@@ -7,6 +7,7 @@ import build_vars
 
 CLEAN_LIST = (
     ".hg*",
+    ".git*",
     ".idea",
     ".DS_Store",
     "*.swp",
